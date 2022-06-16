@@ -5,15 +5,10 @@ class Solution {
 	private static boolean[] visited;
 	private static int r;
 
-	private void combination(int start, int depth){
-		if (depth = r){
-
-		}
-	}
 
 	public int solution(int[] nums) {
 		visited = new boolean[nums.length];
-
+		return -1;
 	}
 
 

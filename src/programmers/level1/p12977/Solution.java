@@ -7,7 +7,7 @@ class Combination{
 	int[] num; // 조합할 숫자 배열
 	int[] tmp;
 	int n; // 몇게를 뽑을 건지
-	boolean [] visited;
+	boolean [] visited = new boolean[1001];
 	ArrayList<int[]> result = new ArrayList<>();
 
 	void combination(int start, int depth){
@@ -30,7 +30,6 @@ class Combination{
 		this.num = num;
 		this.n = n;
 		this.tmp = new int[n];
-		this.visited = new boolean[n + 1];
 		combination(0, 0);
 	}
 }
@@ -70,7 +69,9 @@ class Solution {
 		Combination combination = new Combination(nums, 3);
 		ArrayList<int[]> result = combination.result;
 		for (int[] com : result) {
-			int sumNum = Arrays.stream(com).sum();
+			int sumNum = 0;
+			for (int i=0; i<3; i++)
+				sumNum += nums[com[i]];
 			if (!prime.prime[sumNum])
 				answer++;
 		}
@@ -79,8 +80,9 @@ class Solution {
 
 	public static void main(String[] args) {
 		int[] num = {1, 2, 3, 4};
+		int[] num2 = {1,2,7,6,4};
 		Solution solution = new Solution();
-		int solution1 = solution.solution(num);
+		int solution1 = solution.solution(num2);
 		return ;
 	}
 }
