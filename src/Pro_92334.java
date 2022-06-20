@@ -1,8 +1,7 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
-import programmers.level1.p72410.*;
+
+import programmers.level1.p68935.*;
 
 
 public class Pro_92334 {
@@ -10,11 +9,11 @@ public class Pro_92334 {
 	static HashMap<String, Integer> store = new HashMap<>();
 
 	public static void main(String[] args) {
-		boolean[] tmp = {true, true, false};
-		int[] tmp2 = {1, 2, 3, 4, 5};
-
-		boolean b = Arrays.stream(tmp2).anyMatch(i -> i == 2);
-		System.out.println(b);
-//		System.out.println(tmp.);
+		int n = 7;
+		int[] tmp1 = {2, 3, 4};
+		int[] tmp2 = {1, 2, 3, 6};
+		int[] tmp3 = {4, 1, 2, 3};
+		Solution solution = new Solution();
+		solution.solution(3);
 	}
 }
