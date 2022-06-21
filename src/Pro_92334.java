@@ -1,7 +1,7 @@
-import java.util.Arrays;
-import java.util.HashMap;
+import java.lang.reflect.Array;
+import java.util.*;
 
-import programmers.level1.p68935.*;
+import programmers.level1.p12901.*;
 
 
 public class Pro_92334 {
@@ -13,7 +13,10 @@ public class Pro_92334 {
 		int[] tmp1 = {2, 3, 4};
 		int[] tmp2 = {1, 2, 3, 6};
 		int[] tmp3 = {4, 1, 2, 3};
+		ArrayList<Integer> tmp = new ArrayList<>();
+
 		Solution solution = new Solution();
-		solution.solution(3);
+		solution.solution(12, 31);
+
 	}
 }
