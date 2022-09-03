@@ -13,10 +13,9 @@ public class Main {
 		final int N = Integer.parseInt(st.nextToken());
 		final int K = Integer.parseInt(st.nextToken());
 
-//		HashSet<Character> word = new HashSet<>(); // a n t i c
 		boolean[] word = new boolean[26];
-		ArrayList<Character> newWord = new ArrayList<>(); // 새롭게 추가될 후보 단어들
-		ArrayList<String> strs = new ArrayList<>(); // 입력받은 문자열들
+		ArrayList<Character> newWord = new ArrayList<>(26); // 새롭게 추가될 후보 단어들
+		ArrayList<String> strs = new ArrayList<>(55); // 입력받은 문자열들
 
 		String def = "antatica";
 		for (int i = 0; i < def.length(); i++) {
@@ -44,26 +43,11 @@ public class Main {
 			}
 		}
 
-		// combination
 		int cnt = newWord.size();
-		int result = 0;
-		Combination com = new Combination(cnt, K - 5); // anta tica 가 이미 5개여서
-		for (int[] c : com.result){
-			char [] pickedWord = new char[K - 5];
-			for (int i = 0; i < K - 5; i++) {
-				pickedWord[i] = newWord.get(c[i]);
-			}
-			result = Math.max(result, pickResult(word, pickedWord, strs));
-		}
-		System.out.println(result);
+		Combination com = new Combination(cnt, K - 5, newWord, word, strs); // anta tica 가 이미 5개여서
+		System.out.println(com.maxCount);
 	}
 
-	private static int wordToSet(HashSet<Character> word, String str){
-		for (int i = 0; i < str.length(); i++) {
-			word.add(str.charAt(i));
-		}
-		return word.size();
-	}
 
 	private static boolean includeCk(boolean[] word, String str){
 		for (int i = 0; i < str.length(); i++) {
@@ -73,22 +57,6 @@ public class Main {
 		}
 		return true;
 	}
-
-	private static int pickResult(boolean[] word, char[] pick, ArrayList<String> strs){
-		int result = 0;
-		for (char c : pick){
-			word[c - 'a'] = true;
-		}
-		for (int i = 0; i < strs.size(); i++) {
-			String s = strs.get(i);
-			if (includeCk(word, s))
-				result++;
-		}
-		for (char c : pick){
-			word[c - 'a'] = false;
-		}
-		return result;
-	}
 }
 
 
@@ -97,18 +65,37 @@ class Combination {
 	public int n;
 	public int r;
 	public int[] tmp;
-	public LinkedList<int[]> result = new LinkedList<>();
+	public ArrayList<Character> newWord;
+	public boolean[] word;
+	public ArrayList<String> strs;
+	public int maxCount = 0;
 
-	public Combination(int n, int r) {
+	public Combination(int n, int r, ArrayList<Character> newWord, boolean[] word, ArrayList<String> strs) {
 		this.n = n;
 		this.r = r;
 		tmp = new int[r];
+		this.newWord = newWord;
+		this.word = word;
+		this.strs = strs;
 		combination(0, 0);
 	}
 
 	private void combination(int cnt, int idx){
 		if (cnt == r){
-			result.add(tmp.clone());
+			// 해당 조합된 단어들로 확인
+			for (int i : tmp){
+				Character c = newWord.get(i);
+				word[c - 'a'] = true;
+			}
+
+			// 문자열을 순회하면서 몇개가 맞는지 확인
+			maxCount = Math.max(maxCount, matchCount());
+
+			// 다시 초기값으로 돌리기
+			for (int i : tmp){
+				Character c = newWord.get(i);
+				word[c - 'a'] = false;
+			}
 			return;
 		}
 
@@ -116,5 +103,23 @@ class Combination {
 			tmp[cnt] = i;
 			combination(cnt + 1, idx + 1);
 		}
+	}
+
+	private int matchCount() {
+		int result = 0;
+		for (int i = 0; i < this.strs.size(); i++) {
+			String s = this.strs.get(i);
+			if (includeCk(s))
+				result++;
+		}
+		return result;
+	}
+
+	private boolean includeCk(String s) {
+		for (int j = 0; j < s.length(); j++) {
+			if (!this.word[s.charAt(j) - 'a'])
+				return false;
+		}
+		return true;
 	}
 }
