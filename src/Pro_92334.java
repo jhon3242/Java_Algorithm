@@ -1,22 +1,17 @@
 import programmers.level2.p118667.Solution2;
+import x_lib.combination.Combination;
 
 import java.util.*;
+
 public class Pro_92334 {
 
 
 	public static void main(String[] args) {
 
-		int[] q1 = {3, 2, 7, 2};
-		ArrayList<Integer> arrList = new ArrayList<>();
-
-		arrList.add(3);
-		arrList.add(2);
-		arrList.add(7);
-		arrList.add(2);
-
-		int i = arrList.indexOf(7);
-		System.out.println(i);
-		int asInt = Arrays.stream(q1).max().getAsInt(); // 7
+		String a = "abcd";
+		String b= a.substring(2, a.length() - 2);
+		Combination c = new Combination(3, 2);
+		c.display();
 	}
 
 
