@@ -12,15 +12,18 @@ public class Main {
 
 		final int N = Integer.parseInt(st.nextToken());
 		final int K = Integer.parseInt(st.nextToken());
-		int size = 0;
 
-		HashSet<Character> word = new HashSet<>(); // a n t i c
-		HashSet<Character> newWord = new HashSet<>(); // 새롭게 추가되는 단어들
-		LinkedList<String> strs = new LinkedList<>(); // 입력받은 문자열들
+//		HashSet<Character> word = new HashSet<>(); // a n t i c
+		boolean[] word = new boolean[26];
+		ArrayList<Character> newWord = new ArrayList<>(); // 새롭게 추가될 후보 단어들
+		ArrayList<String> strs = new ArrayList<>(); // 입력받은 문자열들
 
 		String def = "antatica";
-		size = wordToSet(word, def);
-		if (K < size){
+		for (int i = 0; i < def.length(); i++) {
+			word[(byte)def.charAt(i) - 'a'] = true;
+		}
+
+		if (K < 5){ // a n t i c
 			System.out.println(0);
 			return;
 		}
@@ -35,52 +38,54 @@ public class Main {
 
 			// add to newWord
 			for (int j = 0; j < subStr.length(); j++) {
-				if (!word.contains(subStr.charAt(j)))
+				if (!word[(byte)subStr.charAt(j) - 'a'] && !newWord.contains(subStr.charAt(j))) {
 					newWord.add(subStr.charAt(j));
+				}
 			}
 		}
 
 		// combination
-		ArrayList<Character> subWordsList = new ArrayList<Character>(newWord);
-		int cnt = subWordsList.size();
+		int cnt = newWord.size();
 		int result = 0;
-		Combination com = new Combination(cnt, K - 5); // antatica 가 이미 5개여서
+		Combination com = new Combination(cnt, K - 5); // anta tica 가 이미 5개여서
 		for (int[] c : com.result){
 			char [] pickedWord = new char[K - 5];
 			for (int i = 0; i < K - 5; i++) {
-				pickedWord[i] = subWordsList.get(c[i]);
+				pickedWord[i] = newWord.get(c[i]);
 			}
 			result = Math.max(result, pickResult(word, pickedWord, strs));
 		}
 		System.out.println(result);
 	}
 
-	private static int wordToSet(HashSet word, String str){
+	private static int wordToSet(HashSet<Character> word, String str){
 		for (int i = 0; i < str.length(); i++) {
 			word.add(str.charAt(i));
 		}
 		return word.size();
 	}
 
-	private static boolean includeCk(HashSet word, String str){
+	private static boolean includeCk(boolean[] word, String str){
 		for (int i = 0; i < str.length(); i++) {
-			if (!word.contains(str.charAt(i))){
+			if (!word[(byte)(str.charAt(i)) - 'a']){
 				return false;
 			}
 		}
 		return true;
 	}
 
-	private static int pickResult(HashSet<Character> word, char[] pick, LinkedList<String> strs){
-		HashSet<Character> tmp = (HashSet<Character>)word.clone();
+	private static int pickResult(boolean[] word, char[] pick, ArrayList<String> strs){
 		int result = 0;
 		for (char c : pick){
-			tmp.add(c);
+			word[c - 'a'] = true;
 		}
 		for (int i = 0; i < strs.size(); i++) {
 			String s = strs.get(i);
-			if (includeCk(tmp, s))
+			if (includeCk(word, s))
 				result++;
+		}
+		for (char c : pick){
+			word[c - 'a'] = false;
 		}
 		return result;
 	}

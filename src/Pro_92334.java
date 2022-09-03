@@ -8,10 +8,10 @@ public class Pro_92334 {
 
 	public static void main(String[] args) {
 
-		String a = "abcd";
-		String b= a.substring(2, a.length() - 2);
-		Combination c = new Combination(3, 2);
-		c.display();
+		String def = "antatica";
+		for (int i = 0; i < def.length(); i++) {
+			System.out.println((byte)def.charAt(i) - 'a');
+		}
 	}
 
 
