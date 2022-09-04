@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
+	public static List<Character> learn = new ArrayList<>(30);
+	public static List<Character> candidate = new ArrayList<>(25);
+	public static List<String> words = new ArrayList<>(55);
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -13,113 +17,89 @@ public class Main {
 		final int N = Integer.parseInt(st.nextToken());
 		final int K = Integer.parseInt(st.nextToken());
 
-		boolean[] word = new boolean[26];
-		ArrayList<Character> newWord = new ArrayList<>(26); // 새롭게 추가될 후보 단어들
-		ArrayList<String> strs = new ArrayList<>(55); // 입력받은 문자열들
+		// a n t i c
+		learn.add('a');
+		learn.add('n');
+		learn.add('t');
+		learn.add('i');
+		learn.add('c');
 
-		String def = "antatica";
-		for (int i = 0; i < def.length(); i++) {
-			word[(byte)def.charAt(i) - 'a'] = true;
-		}
-
-		if (K < 5){ // a n t i c
+		if (K < 5){
 			System.out.println(0);
 			return;
 		}
 
+		// add to array
 		for (int i = 0; i < N; i++) {
-			String str = br.readLine();
-			String subStr = str.substring(4, str.length() - 4);
-			strs.add(str);
-			// contain check
-			if (subStr.length() == 0 || includeCk(word, subStr))
+			String word = br.readLine();
+			if (word.length() <= 8)
 				continue;
+			word = word.substring(4, word.length()- 4);
+//			System.out.println("word = " + word);
 
-			// add to newWord
-			for (int j = 0; j < subStr.length(); j++) {
-				if (!word[(byte)subStr.charAt(j) - 'a'] && !newWord.contains(subStr.charAt(j))) {
-					newWord.add(subStr.charAt(j));
-				}
+			// add candidate character
+			for (int j = 0; j < word.length(); j++) {
+				char wordCharacter = word.charAt(j);
+				if (candidate.contains(wordCharacter))
+					continue;
+				candidate.add(wordCharacter);
+//				System.out.println("wordCharacter = " + wordCharacter);
 			}
+
+			// add substring word
+			words.add(word);
 		}
 
-		int cnt = newWord.size();
-		Combination com = new Combination(cnt, K - 5, newWord, word, strs); // anta tica 가 이미 5개여서
+		Combination com = new Combination(candidate.size(), K - 5);
+		com.combinationWithOp(0, 0);
 		System.out.println(com.maxCount);
 	}
+	static class Combination{
+		int n;
+		int r;
+		int[] result;
+		int maxCount = 0;
 
-
-	private static boolean includeCk(boolean[] word, String str){
-		for (int i = 0; i < str.length(); i++) {
-			if (!word[(byte)(str.charAt(i)) - 'a']){
-				return false;
-			}
+		public Combination(int n, int r) {
+			this.n = n;
+			this.r = r;
+			result = new int[r];
 		}
-		return true;
-	}
-}
 
-
-class Combination {
-
-	public int n;
-	public int r;
-	public int[] tmp;
-	public ArrayList<Character> newWord;
-	public boolean[] word;
-	public ArrayList<String> strs;
-	public int maxCount = 0;
-
-	public Combination(int n, int r, ArrayList<Character> newWord, boolean[] word, ArrayList<String> strs) {
-		this.n = n;
-		this.r = r;
-		tmp = new int[r];
-		this.newWord = newWord;
-		this.word = word;
-		this.strs = strs;
-		combination(0, 0);
-	}
-
-	private void combination(int cnt, int idx){
-		if (cnt == r){
-			// 해당 조합된 단어들로 확인
-			for (int i : tmp){
-				Character c = newWord.get(i);
-				word[c - 'a'] = true;
+		public void combinationWithOp(int cnt, int idx){
+			if (cnt == r){
+				// picked random idx
+				for (int i : result){
+					Character newChar = candidate.get(i);
+					learn.add(newChar);
+				}
+				int matchCount = 0;
+				for(String word : words){
+					if (matchCk(word))
+						matchCount++;
+				}
+				maxCount = Math.max(maxCount, matchCount);
+				for (int i : result){
+					Character newChar = candidate.get(i);
+					learn.remove(newChar);
+				}
+				return;
 			}
 
-			// 문자열을 순회하면서 몇개가 맞는지 확인
-			maxCount = Math.max(maxCount, matchCount());
-
-			// 다시 초기값으로 돌리기
-			for (int i : tmp){
-				Character c = newWord.get(i);
-				word[c - 'a'] = false;
+			for (int i = idx; i < n; i++) {
+				result[cnt] = i;
+				combinationWithOp(cnt + 1, idx + 1);
 			}
-			return;
-		}
-
-		for (int i = idx; i < n; i++) {
-			tmp[cnt] = i;
-			combination(cnt + 1, idx + 1);
 		}
 	}
 
-	private int matchCount() {
-		int result = 0;
-		for (int i = 0; i < this.strs.size(); i++) {
-			String s = this.strs.get(i);
-			if (includeCk(s))
-				result++;
-		}
-		return result;
-	}
-
-	private boolean includeCk(String s) {
-		for (int j = 0; j < s.length(); j++) {
-			if (!this.word[s.charAt(j) - 'a'])
+	private static boolean matchCk(String word) {
+		for (int i = 0; i < word.length(); i++) {
+			char c = word.charAt(i);
+			if (!learn.contains(c))
 				return false;
 		}
 		return true;
 	}
 }
+
