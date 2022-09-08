@@ -8,11 +8,12 @@ public class Pro_92334 {
 
 	public static void main(String[] args) {
 
-		String def = "antatica";
-		for (int i = 0; i < def.length(); i++) {
-			System.out.println((byte)def.charAt(i) - 'a');
+		int[] q1 = {1, 2, 3, 4, 5, 6, 7, 8};
+		int[] slice = Arrays.copyOfRange(q1, 1, 4); // {2, 3, 4}
+		for (int i = 0; i < slice.length; i++) {
+			System.out.println(slice[i]);
 		}
+//		int sum = Arrays.stream(ints).sum();
+//		System.out.println(sum);
 	}
-
-
 }
