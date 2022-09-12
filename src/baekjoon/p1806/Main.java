@@ -7,14 +7,14 @@ import java.util.StringTokenizer;
 
 public class Main {
 	static int N;
-	static int K;
+	static int S;
 	static int[] array;
 	static int minCount;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
-		K = Integer.parseInt(st.nextToken());
+		S = Integer.parseInt(st.nextToken());
 		minCount = N + 1;
 
 		// init arr
@@ -24,45 +24,45 @@ public class Main {
 			array[i] = Integer.parseInt(st.nextToken());
 		}
 
-		binary(0, N);
-		System.out.println("minCount = " + minCount);
-	}
-
-	public static boolean midSumCk(int length){
-		int i = 0;
-		int[] subArr;
-		int sum;
-		while (i + length <= N){
-			sum = 0;
-			for (int j = i; j < i + length; j++) {
-				sum += array[j];
-			}
-			if (sum >= K)
-				return true;
-			i++;
+		// exception ck
+		if (sumArr() < S){
+			System.out.println(0);
+			return;
 		}
-		return false;
-	}
 
-	public static int binary(int start, int end){
-		int mid;
+		int start = 0;
+		int end = 1;
+		int sumTmp = array[start];
 
-		while (start <= end){
-			mid = (start + end) / 2;
-			if (midSumCk(mid)){
-				minCount = Math.min(minCount, mid);
-				return binary(start, mid - 1);
+		while (start < end && end <= N){
+			if (sumTmp >= S){
+				minCount = Math.min(minCount, end - start);
+				sumTmp -= array[start];
+				start++;
 			}
 			else{
-				return binary(mid + 1, end);
+				if (end < N){
+					sumTmp += array[end];
+				}
+				end++;
 			}
 		}
-		return start;
+		System.out.println(minCount);
+	}
+
+	private static int sumArr() {
+		int tmp;
+
+		tmp = 0;
+		for (int i = 0; i < array.length; i++) {
+			tmp += array[i];
+		}
+		return tmp;
 	}
 }
 
 /**
 10 40
 5 1 3 5 10 7 4 9 2 8
-
+result : 6
  */
