@@ -1,19 +1,30 @@
 import programmers.level2.p118667.Solution2;
 import x_lib.combination.Combination;
 
-import java.util.*;
+import java.io.*;
 
 public class Pro_92334 {
 
+	static int[] arr = new int[10];
+	static int target = 5;
 
-	public static void main(String[] args) {
-
-		int[] q1 = {1, 2, 3, 4, 5, 6, 7, 8};
-		int[] slice = Arrays.copyOfRange(q1, 1, 4); // {2, 3, 4}
-		for (int i = 0; i < slice.length; i++) {
-			System.out.println(slice[i]);
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		for (int i = 0; i < 10; i++) {
+			arr[i] = Integer.parseInt(br.readLine());
 		}
-//		int sum = Arrays.stream(ints).sum();
-//		System.out.println(sum);
+		recursion(0, 10);
+	}
+
+	static void recursion(int st, int ed){
+		if (arr[st] == target){
+			System.out.println(target + "의 위치 : " + st);
+			return;
+		}
+		int mid = (st + ed) / 2;
+		if (target >= arr[mid])
+			recursion(mid, ed);
+		else
+			recursion(st, mid);
 	}
 }
