@@ -3,65 +3,92 @@ package programmers.level2.p92341;
 import java.util.*;
 
 class Car implements Comparable<Car>{
-	static int fee = 0;
 	int carNum;
-	int lastTime = 0;
-	int countTime = 0;
+	int totalTime;
+	int lastTime;
+	boolean state;
 
+	Car(int carNum){
+		this.carNum = carNum;
+	}
 
-	Car(int num, int lastTime){
-		this.carNum = num;
+	void setLastTime(int lastTime){
 		this.lastTime = lastTime;
 	}
 
-	void addFee(int num){
-		fee += num;
+	int getLastTime(){
+		return this.lastTime;
+	}
+
+	void addTotalTime(int num){
+		totalTime += num;
 	}
 
 	@Override
-	public int compareTo(Car o) {
+	public int compareTo(Car o){
 		return carNum - o.carNum;
 	}
 }
 
-class Solution {
+public class Solution {
 	public int[] solution(int[] fees, String[] records) {
-		int[] answer = {};
-		HashMap<Integer, Car> carHash = new HashMap<>();
-		PriorityQueue<Car> queue = new PriorityQueue<>();
+		List<Integer> answerList = new LinkedList<>();
+		// PriorityQueue<Car> q = new PriorityQueue<>(); // 우선순위 큐로 구현하면 탐색을 계속 N 만큼 해줘야 해서 비효율적이다.
+		Car[] carArr = new Car[10000];
+		final int basicTime = fees[0];
+		final int basicFee = fees[1];
+		final int unitTime = fees[2];
+		final int unitFee = fees[3];
 
 		for (String reco : records){
 			String[] splited = reco.split(" ");
+			String status = splited[2];
 			String time = splited[0];
 			int carNum = Integer.parseInt(splited[1]);
-			String status = splited[2];
 
 			if (status.equals("IN")){
-				System.out.println("in" + carNum);
-				Car newCar = new Car(carNum, timeToNum(time));
-				if (!queue.contains(carNum))
-					queue.add(newCar);
-				carHash.put(carNum, newCar);
+				if (carArr[carNum] == null)
+					carArr[carNum] = new Car(carNum);
+				carArr[carNum].setLastTime(timeToNum(time));
+				carArr[carNum].state = true;
 			}
 			else{
-				System.out.println("out" + carNum);
-				Car current = carHash.get(carNum);
-				current.addFee(current.lastTime - timeToNum(time));
-				carHash.remove(current);
+				carArr[carNum].addTotalTime(timeToNum(time) - carArr[carNum].getLastTime());
+				carArr[carNum].state = false;
 			}
 		}
-		carHash.forEach((carNum, car) -> {
-			car.addFee(car.lastTime - timeToNum("23:59"));
-		});
+
+		for(int i = 0; i < 10000; i++){
+			if (carArr[i] == null)
+				continue;
+			if (carArr[i].state) // 마지막에 출차하지 않은 경우
+				carArr[i].addTotalTime(timeToNum("23:59") - carArr[i].getLastTime());
+			int curTime = carArr[i].totalTime;
+
+			int result = basicFee;
+			if (curTime > basicTime){
+				int diff = curTime - basicTime;
+				if (diff % unitTime != 0){
+					diff /= unitTime;
+					diff += 1;
+				}
+				else{
+					diff /= unitTime;
+				}
+				result += diff * unitFee;
+			}
+			answerList.add(result);
+		}
+
+		int[] answer = answerList.stream()
+				.mapToInt(i -> i)
+				.toArray();
 
 		return answer;
 	}
 
 	private int timeToNum(String time){
-		int result = 0;
-		String[] splited = time.split(":");
-		result += Integer.parseInt(splited[0]) * 60;
-		result += Integer.parseInt(splited[1]);
-		return result;
+		String[] tmp = time.split(":");
+		return Integer.parseInt(tmp[0]) * 60 + Integer.parseInt(tmp[1]);
 	}
 }
