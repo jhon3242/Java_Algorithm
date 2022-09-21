@@ -78,12 +78,16 @@ public class Solution2 {
 		Solution solution = new Solution();
 //		int[] q1 = {3, 2, 7, 2};
 //		int[] q2 = {4, 6, 5, 1};
-
+//
 //		int[] q1 = {1, 2, 1, 2};
 //		int[] q2 = {1, 10, 1, 2};
+//
+//		int[] q1 = {1, 5};
+//		int[] q2 = {1, 1};
 
-		int[] q1 = {1, 5};
-		int[] q2 = {1, 1};
+		int[] q1 = {3, 2, 4};
+		int[] q2 = {1, 15, 5};
+
 
 		int solution1 = solution.solution(q1, q2);
 		System.out.println("solution1 = " + solution1);
