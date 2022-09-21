@@ -35,7 +35,8 @@ class Solution {
 	private int INF = 1000;
 
 	public String[] solution(int[][] line) {
-		char[][] graph;
+		char[] graph;
+		String[] result;
 		dfs(line, 0, 0);
 		int maxR = 0, maxC = 0, minR = INF, minC = INF, r_size = 0, c_size = 0;
 
@@ -49,28 +50,35 @@ class Solution {
 
 		r_size = maxR - minR + 1;
 		c_size = maxC - minC + 1;
-		graph = new char[r_size][c_size];
-		System.out.println("r size : " + r_size + " c_size : " + c_size);
+		result = new String[r_size];
+		graph = new char[c_size];
+		// System.out.println("r size : " + r_size + " c_size : " + c_size);
+		Arrays.fill(graph, '.');
 		for (int i=0; i<r_size; i++){
-			Arrays.fill(graph[i], '.');
+			result[i] = new String(graph);
 		}
 
+		StringBuilder sb;
 		for (Point p : points){
 			p.x = p.x + minC * (-1);
 			p.y = p.y + minR * (-1);
 			// System.out.println(p);
-			graph[p.y][p.x] = '*';
+			sb = new StringBuilder(result[p.y]);
+			sb.setCharAt(p.x, '*');
+			result[p.y] = sb.toString();
 		}
 
 		// System.out.println("maxR = " + maxR);
 		// System.out.println("maxC = " + maxC);
 		// System.out.println("minR = " + minR);
 		// System.out.println("minC = " + minC);
-		String[] answer = new String[r_size];
-		for (int i=0; i<r_size; i++){
-			answer[r_size - i - 1] = new String(graph[i]);
+		// String[] answer = new String[r_size];
+		for (int i=0; i<r_size /2 ; i++){
+			String tmp = result[r_size - 1 - i];
+			result[r_size - 1 - i] = result[i];
+			result[i] = tmp;
 		}
-		return answer;
+		return result;
 	}
 
 	private void addPoint(int[][] line, int[] r1, int[] r2){
