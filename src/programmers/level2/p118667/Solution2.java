@@ -1,7 +1,6 @@
 package programmers.level2.p118667;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 class Solution {
 	private int[] q1;
@@ -29,14 +28,18 @@ class Solution {
 			return -1;
 
 		target /= 2;
-
+		// System.out.println("target " + target);
+		tmp = Arrays.stream(q1).reduce(0, (a, b) -> a + b);
 		while (answer < q1Size * 3){
-			tmp = sumArr(start, end);
 			if (tmp > target){
+				// System.out.println("too big");
+				tmp -= concat[start % (q1Size + q2Size)];
 				start++;
 				answer++;
 			}
 			else if (tmp < target){
+				// System.out.println("too small");
+				tmp += concat[end % (q1Size + q2Size)];
 				end++;
 				answer++;
 			}
@@ -51,24 +54,6 @@ class Solution {
 			}
 		}
 		return -1;
-	}
-
-	private long sumArr(int start, int end){
-		long result = 0;
-		if (start < end){
-			for (int i = start; i < end; i++) {
-				result += concat[i];
-			}
-		}
-		else{
-			for (int i = start; i < concat.length; i++) {
-				result += concat[i];
-			}
-			for (int i = 0; i < end; i++) {
-				result += concat[i];
-			}
-		}
-		return result;
 	}
 }
 
