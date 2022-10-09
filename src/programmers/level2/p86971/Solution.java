@@ -26,29 +26,17 @@ class Solution {
 			int from = wires[i][0];
 			int to = wires[i][1];
 
-			if (find_parents(parents, from) != find_parents(parents, to)){
-				union_parents(parents, from , to);
-			}
+			union_parents(parents, from , to);
 		}
-		int tmp = parents[1], count = 0;
+		int tmp = find_parents(parents, 1), count = 0;
 		for (int i=1; i<=n; i++){
-			int p = parents[i];
-			if (p == tmp)
-				count += 1;
+			if (find_parents(parents, i) == tmp)
+				count++;
 			else
-				count -= 1;
+				count--;
 		}
-
-		//
-		// for (int i = 1; i<=n; i++){
-		//     System.out.print(parents[i] + " ");
-		// }
-		// System.out.println();
-		// System.out.println("count : " + count);
 		return Math.abs(count);
 	}
-
-
 
 	private int find_parents(int[] parents, int n){
 		if (parents[n] != n)
