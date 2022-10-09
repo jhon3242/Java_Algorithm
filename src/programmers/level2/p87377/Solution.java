@@ -2,107 +2,67 @@ package programmers.level2.p87377;
 
 import java.util.*;
 
-class Point{
-	int x, y;
-
-	public Point(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Point point = (Point) o;
-		return x == point.x && y == point.y;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(x, y);
-	}
-
-	@Override
-	public String toString() {
-		return "[" + x + ", " + y + "]";
-	}
-}
-
 class Solution {
-	private Set<Point> points = new HashSet<>();
-	private int[] order = new int[2];
-	private int INF = 1000;
-
 	public String[] solution(int[][] line) {
-		char[] graph;
-		String[] result;
-		dfs(line, 0, 0);
-		int maxR = 0, maxC = 0, minR = INF, minC = INF, r_size = 0, c_size = 0;
+		String[] answer = {};
+		List<long[]> points = new ArrayList<>();
+		long maxX = Long.MIN_VALUE;
+		long maxY = Long.MIN_VALUE;
+		long minX = Long.MAX_VALUE;
+		long minY = Long.MAX_VALUE;
 
-		// x, y 에 칼럼, 로우가 맞춰짐
-		for (Point p : points){
-			maxC = Math.max(maxC, p.x);
-			maxR = Math.max(maxR, p.y);
-			minC = Math.min(minC, p.x);
-			minR = Math.min(minR, p.y);
+		for (int i = 0; i < line.length; i++) {
+			long a = line[i][0];
+			long b = line[i][1];
+			long e = line[i][2];
+			for (int j = i + 1; j < line.length; j++) {
+				long c = line[j][0];
+				long d = line[j][1];
+				long f = line[j][2];
+
+				long xUp = b*f - e*d;
+				long xDown = a*d - b*c;
+				long yUp = e*c - a*f;
+				long yDown = a*d - b*c;
+
+				if (xDown == 0 || xUp % xDown != 0 || yUp % yDown != 0)
+					continue;
+				long x = xUp / xDown;
+				long y = yUp / yDown;
+				maxX = Math.max(maxX, x);
+				minX = Math.min(minX, x);
+				maxY = Math.max(maxY, y);
+				minY = Math.min(minY, y);
+				points.add(new long[]{x, y});
+			}
+		}
+		int c_size = (int)(Math.abs(maxX - minX)) + 1; // x 좌표는 Col
+		int r_size = (int)(Math.abs(maxY - minY)) + 1;
+
+		// System.out.println("c_size = " + c_size);
+		// System.out.println("r_size = " + r_size);
+		boolean[][] tmpGraph = new boolean[r_size][c_size];
+
+		for (long[] p : points){
+			int tx = (int)(p[0] - minX);
+			int ty = (int)(p[1] - maxY);
+			tmpGraph[Math.abs(ty)][tx] = true;
 		}
 
-		r_size = maxR - minR + 1;
-		c_size = maxC - minC + 1;
-		result = new String[r_size];
-		graph = new char[c_size];
-		// System.out.println("r size : " + r_size + " c_size : " + c_size);
-		Arrays.fill(graph, '.');
-		for (int i=0; i<r_size; i++){
-			result[i] = new String(graph);
+		int i = 0;
+		answer = new String[tmpGraph.length];
+		for (boolean[] gr : tmpGraph){
+			StringBuilder sb = new StringBuilder();
+			for (boolean g : gr){
+				if (g)
+					sb.append("*");
+				else
+					sb.append(".");
+			}
+			answer[i] = sb.toString();
+			i++;
 		}
 
-		StringBuilder sb;
-		for (Point p : points){
-			p.x = p.x + minC * (-1);
-			p.y = p.y + minR * (-1);
-			// System.out.println(p);
-			sb = new StringBuilder(result[p.y]);
-			sb.setCharAt(p.x, '*');
-			result[p.y] = sb.toString();
-		}
-
-		// System.out.println("maxR = " + maxR);
-		// System.out.println("maxC = " + maxC);
-		// System.out.println("minR = " + minR);
-		// System.out.println("minC = " + minC);
-		// String[] answer = new String[r_size];
-		for (int i=0; i<r_size /2 ; i++){
-			String tmp = result[r_size - 1 - i];
-			result[r_size - 1 - i] = result[i];
-			result[i] = tmp;
-		}
-		return result;
-	}
-
-	private void addPoint(int[][] line, int[] r1, int[] r2){
-		if ((r1[0]*r2[1] - r1[1]*r2[0]) == 0){
-			return ;
-		}
-		if ((r1[1]*r2[2] - r1[2]*r2[1]) % (r1[0]*r2[1] - r1[1]*r2[0]) != 0 ||
-				(r1[2]*r2[0] - r1[0]*r2[2]) % (r1[0]*r2[1] - r1[1]*r2[0]) != 0
-		)
-			return ;
-
-		int x = (r1[1]*r2[2] - r1[2]*r2[1]) / (r1[0]*r2[1] - r1[1]*r2[0]);
-		int y = (r1[2]*r2[0] - r1[0]*r2[2]) / (r1[0]*r2[1] - r1[1]*r2[0]);
-		points.add(new Point(x, y));
-	}
-
-	private void dfs(int[][] line, int start, int d){
-		if (d == 2){
-			addPoint(line, line[order[0]], line[order[1]]);
-			return;
-		}
-		for (int i=start; i<line.length; i++){
-			order[d] = i;
-			dfs(line, start + 1, d + 1);
-		}
+		return answer;
 	}
 }
