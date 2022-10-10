@@ -2,83 +2,59 @@ package programmers.level2.p72412;
 
 import java.util.*;
 
+import java.util.*;
+
 class Solution {
-	Map<String, LinkedList> store = new HashMap<>();
-	public int[] solution(String[] info, String[] query) {
+	static HashMap<String, List<Integer>> map;
+
+	public static int[] solution(String[] info, String[] query) {
 		int[] answer = new int[query.length];
+		map = new HashMap<>();
 
-		for (String lan : new String[]{"python", "cpp", "java", "-"}){
-			StringBuilder sb = new StringBuilder();
-			sb.append(lan);
-			for(String part : new String[]{"backend", "frontend", "-"}){
-				sb.append(part);
-				for(String career : new String[]{"junior", "senior", "-"}){
-					sb.append(career);
-					for(String food : new String[]{"chicken", "pizza", "-"}){
-						sb.append(food);
-						// System.out.println("#" + sb + "#");
-						store.put(sb.toString(), new LinkedList<>());
-						sb.setLength(sb.length() - food.length());
-					}
-					sb.setLength(sb.length() - career.length());
-				}
-				sb.setLength(sb.length() - part.length());
-			}
-			sb.setLength(sb.length() - lan.length());
-		}
-		// for(String k : store.keySet()){
-		// 	System.out.println("k = " + k);
-		// }
-
-		for (String i : info){
-			String[] split = i.split(" ");
-			for (String lan : new String[]{split[0], "-"}){
-				StringBuilder sb = new StringBuilder();
-				sb.append(lan);
-				for(String part : new String[]{split[1], "-"}){
-					sb.append(part);
-					for(String career : new String[]{split[2], "-"}){
-						sb.append(career);
-						for(String food : new String[]{split[3], "-"}){
-							sb.append(food);
-							store.get(sb.toString()).add(Integer.parseInt(split[4]));
-							sb.setLength(sb.length() - food.length());
-						}
-						sb.setLength(sb.length() - career.length());
-					}
-					sb.setLength(sb.length() - part.length());
-				}
-				sb.setLength(sb.length() - lan.length());
-			}
+		for (int i = 0; i < info.length; i++) {
+			String[] p = info[i].split(" ");
+			makeSentence(p, "", 0);
 		}
 
-		for(String k : store.keySet()){
-			Collections.sort(store.get(k), Collections.reverseOrder());
-		 }
+		for (String key : map.keySet())
+			Collections.sort(map.get(key));
 
 		int idx = 0;
 		for (String q : query){
+			q = q.replaceAll(" and ", "");
 			String[] split = q.split(" ");
-			String curKey = split[0] + split[2] + split[4] + split[6];
-			int score = Integer.parseInt(split[7]);
-
-			LinkedList<Integer> list = store.get(curKey);
-			int count = getCount(list, score);
-			System.out.println("count = " + count);
-			answer[idx++] = count;
+			answer[idx++] = map.containsKey(split[0]) ? binarySearch(split[0], Integer.parseInt(split[1])) : 0;
 		}
+
 		return answer;
 	}
 
-	private int getCount(LinkedList<Integer> list, int score){
+	// 이분 탐색
+	private static int binarySearch(String key, int score) {
+		List<Integer> list = map.get(key);
 		int start = 0, end = list.size() - 1;
-		while (start <= end){
+
+		while (start <= end) {
 			int mid = (start + end) / 2;
-			if (list.get(mid) < score) // 오른쪽에 있는 경우
+			if (list.get(mid) < score)
 				start = mid + 1;
 			else
 				end = mid - 1;
 		}
+
 		return list.size() - start;
+	}
+
+	// info가 포함될 수 있는 문장
+	private static void makeSentence(String[] split, String str, int d) {
+		if (d == 4){
+			if (!map.containsKey(str)){
+				map.put(str, new ArrayList());
+			}
+			map.get(str).add(Integer.parseInt(split[4]));
+			return ;
+		}
+		makeSentence(split, str + split[d], d + 1);
+		makeSentence(split, str + "-", d + 1);
 	}
 }
