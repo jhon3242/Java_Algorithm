@@ -21,6 +21,7 @@ class Solution {
 			}
 		}
 		return answer;
+
 	}
 
 	private boolean dfs(int x, int y, int d, boolean result){

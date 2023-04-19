@@ -19,9 +19,6 @@ public class Main {
 		for (int i = 0; i < n; i++) {
 			int coin = Integer.parseInt(br.readLine());
 			int j = 0;
-			while (j * coin <= k){
-				canMake
-			}
 		}
 	}
 }
