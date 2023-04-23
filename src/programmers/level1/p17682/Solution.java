@@ -26,12 +26,12 @@ public class Solution {
 					score.set(idx - 2, score.get(idx - 2) * option);
 			}
 			else {
-				if (Character.isDigit(dartResult.charAt(i + 1))) {
-					tmp = Integer.parseInt(dartResult, i, i + 2, 10);
-					i++;
-				}
-				else
-					tmp = Integer.parseInt(dartResult, i, i + 1, 10);
+//				if (Character.isDigit(dartResult.charAt(i + 1))) {
+//					tmp = Integer.parseInt(dartResult, i, i + 2, 10);
+//					i++;
+//				}
+//				else
+//					tmp = Integer.parseInt(dartResult, i, i + 1, 10);
 			}
 		}
 		for (Integer num : score)

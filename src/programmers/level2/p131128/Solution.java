@@ -27,7 +27,7 @@ class Solution {
 		for (int i=9; i>=0; i--){
 			char num = (char)(i + '0');
 			int time = Math.min(xStore.get(num), yStore.get(num));
-			answer += String.valueOf(num).repeat(time);
+//			answer += String.valueOf(num).repeat(time);
 		}
 		if (answer.length() == 0)
 			return "-1";
