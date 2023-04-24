@@ -53,11 +53,20 @@ public class main {
 //		return answer == Integer.MAX_VALUE ? 0 : answer;
 //	}
 	
+	class Test {
+		private long diff1, diff2;
+
+		public void solution() {
+			int[] queue1 = new int[]{1, 2, 54, 3};
+
+			diff1 = (long)(Arrays.stream(queue1).sum());
+			for (int i = 0; i < queue1.length; i++) {
+				diff2 += queue1[i];
+			}
+		}
+	}
 
 	public static void main(String[] args) throws ParseException {
-		List<String> answer = new LinkedList<>();
-		answer.add("A");
-		String remove = answer.remove(0);
-		System.out.println("answer = " + answer.size());
+
 	}
 }

@@ -2,6 +2,12 @@ package programmers.level2.p118667;
 
 import java.util.*;
 
+/**
+ * stream 을 사용해 tmp 합을 구했었어서 fail 했었다.
+ * tmp = (long)(Arrays.stream(queue1).sum());
+ * 위와 같이 사용했었는데 시간초과가 아닌 fail 이 떴었다.
+ */
+
 class Solution {
 	private int[] q1;
 	private int[] q2;
