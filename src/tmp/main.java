@@ -53,20 +53,19 @@ public class main {
 //		return answer == Integer.MAX_VALUE ? 0 : answer;
 //	}
 	
-	class Test {
-		private long diff1, diff2;
 
-		public void solution() {
-			int[] queue1 = new int[]{1, 2, 54, 3};
-
-			diff1 = (long)(Arrays.stream(queue1).sum());
-			for (int i = 0; i < queue1.length; i++) {
-				diff2 += queue1[i];
-			}
-		}
-	}
 
 	public static void main(String[] args) throws ParseException {
+		Map<String , Integer> mbtiMap = new HashMap<>();
 
+		mbtiMap.entrySet()
+				.stream()
+				.map(entry -> {
+					if (entry.getValue() <= 0) {
+						return entry.getKey().substring(0, 1);
+					} else {
+						return entry.getKey().substring(1);
+					}
+				}).collect(Collectors.joining());
 	}
 }
