@@ -57,9 +57,8 @@ public class main {
 
 
 	public static void main(String[] args) throws ParseException {
-		String[][] map = new String[][] {{"ABC"}};
-		int[] s = new int[5];
+		String a = "abc";
 
-		s[1] =
+		a.toCharArray();
 	}
 }

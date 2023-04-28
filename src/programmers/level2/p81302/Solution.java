@@ -4,6 +4,9 @@ package programmers.level2.p81302;
  * 2회차
  * 정확성: 76.3
  * 합계: 76.3 / 100.0
+ * bfs 로 구현헀는데 POP 인 경우 visited = [true, false, true]
+ * O 위치에서 왼쪽 P 로 가면 안되고 오른쪽 P 로 가는 경우에는 fail 인데 구분하기가 힘들다
+ * 따라서 dfs 로 구현해야할듯하다.
  */
 
 import java.util.*;
