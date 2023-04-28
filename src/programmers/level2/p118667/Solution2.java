@@ -15,6 +15,7 @@ class Solution {
 	private int start, end, q1Size, q2Size;
 	private long target, tmp;
 
+
 	public int solution(int[] queue1, int[] queue2) {
 		int answer = 0;
 		q1 = queue1;

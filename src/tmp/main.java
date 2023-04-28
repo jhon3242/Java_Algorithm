@@ -1,7 +1,8 @@
 package tmp;
 
+//import programmers.level2.p92341.Car;
+
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -56,16 +57,9 @@ public class main {
 
 
 	public static void main(String[] args) throws ParseException {
-		Map<String , Integer> mbtiMap = new HashMap<>();
+		String[][] map = new String[][] {{"ABC"}};
+		int[] s = new int[5];
 
-		mbtiMap.entrySet()
-				.stream()
-				.map(entry -> {
-					if (entry.getValue() <= 0) {
-						return entry.getKey().substring(0, 1);
-					} else {
-						return entry.getKey().substring(1);
-					}
-				}).collect(Collectors.joining());
+		s[1] =
 	}
 }
