@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class main {
 
@@ -53,12 +54,15 @@ public class main {
 //
 //		return answer == Integer.MAX_VALUE ? 0 : answer;
 //	}
-	
+
 
 
 	public static void main(String[] args) throws ParseException {
-		String a = "abc";
+		String a = "XMY";
 
-		a.toCharArray();
+		String sorted = Stream.of(a.split(""))
+				.sorted()
+				.collect(Collectors.joining());
+
 	}
 }

@@ -1,60 +1,77 @@
 package programmers.level2.p72412;
 
-import java.util.*;
+/**
+ * 2차 시도
+ */
 
 import java.util.*;
 
 class Solution {
-	static HashMap<String, List<Integer>> map;
+	private static Map<String, List<Integer>> store = new HashMap<>();
 
-	public static int[] solution(String[] info, String[] query) {
-		int[] answer = new int[query.length];
-		map = new HashMap<>();
+	public int[] solution(String[] info, String[] query) {
+		List<Integer> answer = new ArrayList<>();
 
-		for (int i = 0; i < info.length; i++) {
-			String[] p = info[i].split(" ");
-			makeSentence(p, "", 0);
+
+		initInfo(info);
+
+		for (List<Integer> list : store.values()) {
+			Collections.sort(list);
 		}
 
-		for (String key : map.keySet())
-			Collections.sort(map.get(key));
+		// for (String key : store.)
 
-		int idx = 0;
-		for (String q : query){
-			q = q.replaceAll(" and ", "");
-			String[] split = q.split(" ");
-			answer[idx++] = map.containsKey(split[0]) ? binarySearch(split[0], Integer.parseInt(split[1])) : 0;
+
+		// store.values()
+		//     .stream()
+		//     .forEach(l -> Collections.sort(l));
+
+		for (String qu : query) {
+			String[] sp = qu.replaceAll(" and ", " ").split(" ");
+			// System.out.println(Arrays.toString(sp.split(" ")));
+			String key = String.join("", Arrays.copyOfRange(sp, 0, 4));
+			// System.out.println(Arrays.toString(keyArr));
+			if (!store.containsKey(key)) {
+				answer.add(0);
+				continue;
+			}
+			List<Integer> li = store.get(key);
+			int result = bSearch(li, Integer.parseInt(sp[4]));
+			answer.add(result);
+			// System.out.println(result);
 		}
-
-		return answer;
+		return answer.stream().mapToInt(i -> i).toArray();
 	}
 
-	// 이분 탐색
-	private static int binarySearch(String key, int score) {
-		List<Integer> list = map.get(key);
-		int start = 0, end = list.size() - 1;
+	private void initInfo(String[] info) {
+		for (String in : info) {
+			String[] sp = in.split(" ");
+			recursive(sp, "", 0);
+		}
+	}
+
+	private void recursive(String[] sp, String key, int level) {
+
+		if (level == 4) {
+			List<Integer> list = store.computeIfAbsent(key, v -> new ArrayList<>());
+			list.add(Integer.parseInt(sp[4]));
+			return;
+		}
+
+		recursive(sp, key + sp[level], level + 1);
+		recursive(sp, key + "-", level + 1);
+	}
+
+	private int bSearch(List<Integer> arr, int target) {
+		int start = 0;
+		int end = arr.size() - 1;
+		int mid;
 
 		while (start <= end) {
-			int mid = (start + end) / 2;
-			if (list.get(mid) < score)
-				start = mid + 1;
-			else
-				end = mid - 1;
+			mid = (start + end) / 2;
+			if (arr.get(mid) < target) start = mid + 1;
+			else end = mid - 1;
 		}
-
-		return list.size() - start;
-	}
-
-	// info가 포함될 수 있는 문장
-	private static void makeSentence(String[] split, String str, int d) {
-		if (d == 4){
-			if (!map.containsKey(str)){
-				map.put(str, new ArrayList());
-			}
-			map.get(str).add(Integer.parseInt(split[4]));
-			return ;
-		}
-		makeSentence(split, str + split[d], d + 1);
-		makeSentence(split, str + "-", d + 1);
+		return arr.size() - start;
 	}
 }
