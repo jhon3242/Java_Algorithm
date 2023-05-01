@@ -58,11 +58,14 @@ public class main {
 
 
 	public static void main(String[] args) throws ParseException {
-		String a = "XMY";
+		List<String > a = new ArrayList<>();
+		a.add("a");
+		a.add("b");
+		a.remove(a.size() - 1);
+		System.out.println("a = " + a);
+		String[] strings = a.toArray(new String[0]);
+		List<String> arrayList = new ArrayList<>();
 
-		String sorted = Stream.of(a.split(""))
-				.sorted()
-				.collect(Collectors.joining());
 
 	}
 }
