@@ -58,14 +58,11 @@ public class main {
 
 
 	public static void main(String[] args) throws ParseException {
-		List<String > a = new ArrayList<>();
-		a.add("a");
-		a.add("b");
-		a.remove(a.size() - 1);
-		System.out.println("a = " + a);
-		String[] strings = a.toArray(new String[0]);
-		List<String> arrayList = new ArrayList<>();
+		int[] arr = new int[]{1,3,9};
+		StringBuilder sb = new StringBuilder();
 
-
+		sb.
+		int i = Arrays.binarySearch(arr, 0);
+		System.out.println("i = " + i);
 	}
 }

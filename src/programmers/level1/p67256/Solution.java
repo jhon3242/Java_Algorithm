@@ -1,80 +1,66 @@
 package programmers.level1.p67256;
 
-import java.util.ArrayList;
+import java.util.*;
 
 class Solution {
-	int[][] pad = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {-1, 0, -2}};
-	int lx = 3, ly = 0;
-	int rx = 3, ry = 2;
-	String hand;
-	String answer;
-	ArrayList<Integer> left_num = new ArrayList<>();
-	ArrayList<Integer> right_num = new ArrayList<>();
+	private final int[][] graph = {{1,2,3},{4,5,6},{7,8,9},{-1,0,-1}};
+	private int[] lPos = new int[]{3, 0};
+	private int[] rPos = new int[]{3, 2};
 
 	public String solution(int[] numbers, String hand) {
-		answer = "";
-		this.hand = hand;
-		left_num.add(1);
-		left_num.add(4);
-		left_num.add(7);
-		right_num.add(3);
-		right_num.add(6);
-		right_num.add(9);
+		StringBuilder answer = new StringBuilder();
+
+		// int re = getDis(lPos, getPos(3));
+		// System.out.println(re);
 
 		for (int num : numbers) {
-			dis(num);
+			int[] tmpPos = getPos(num);
+			// System.out.println("num " + num + " pos " + Arrays.toString(tmpPos));
+			if (tmpPos[1] == 0) {
+				// System.out.println("LLL");
+				answer.append("L");
+				lPos = tmpPos;
+			} else if (tmpPos[1] == 2) {
+				// System.out.println("RRR");
+				answer.append("R");
+				rPos = tmpPos;
+			} else {
+
+				int lDis = getDis(tmpPos, lPos);
+				int rDis = getDis(tmpPos, rPos);
+				if (lDis < rDis || (lDis == rDis && hand.equals("left"))) {
+					answer.append("L");
+					lPos = tmpPos;
+				} else {
+					answer.append("R");
+					rPos = tmpPos;
+				}
+				// System.out.println("num " + num + " pos " + Arrays.toString(tmpPos) + "\n");
+				// System.out.println(Arrays.toString(getPos(5)));
+				// System.out.println("numPos " + Arrays.toString(tmpPos));
+				// System.out.println("lPos " + Arrays.toString(lPos));
+				// System.out.println("rPos " + Arrays.toString(rPos));
+				// System.out.println("lDis " + lDis + " rDis " + rDis);
+			}
 		}
-		return answer;
+		// String r = Arrays.toString(getPos(9));
+		// System.out.println(r);
+		return answer.toString();
 	}
 
-	private void dis(int target) {
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 3; j++) {
-				if (pad[i][j] == target) {
-					if (left_num.contains(target)){
-						answer+="L";
-						lx = i;
-						ly = j;
-					}
-					else if (right_num.contains(target)){
-						answer+="R";
-						rx = i;
-						ry = j;
-					}
-					else{
-						int ldis = Math.abs(lx - i) + Math.abs(ly - j);
-						int rdis = Math.abs(rx - i) + Math.abs(ry - j);
-						if (hand.equals("left")) {
-							if (ldis <= rdis) {
-								lx = i;
-								ly = j;
-								answer += "L";
-							} else {
-								rx = i;
-								ry = j;
-								answer += "R";
-							}
-						} else {
-							if (ldis < rdis) {
-								lx = i;
-								ly = j;
-								answer += "L";
-							} else {
-								rx = i;
-								ry = j;
-								answer += "R";
-							}
-						}
-					}
-
+	private int[] getPos(int num) {
+		if (num < 0) return null;
+		for (int x = 0; x < 4; x ++) {
+			for (int y = 0 ; y < 3; y++) {
+				if (graph[x][y] == num) {
+					return new int[]{x, y};
 				}
 			}
 		}
+		return null;
 	}
 
-	public static void main(String[] args) {
-		Solution solution = new Solution();
-		int[] ints = {1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5};
-		System.out.println(solution.solution(ints, "right"));
+	private int getDis(int[] a, int[] b) {
+		return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
 	}
 }

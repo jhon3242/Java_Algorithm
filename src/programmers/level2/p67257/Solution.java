@@ -63,7 +63,8 @@ class Solution {
 
 	// 우선순위에 따라 계산한 결과를 최대값과 비교한다.
 	private void updateResult() {
-		List<String> tmpList = List.copyOf(list);
+		List<String> tmpList = Arrays.asList();
+		tmpList.addAll(list);
 		for (int j = 0 ; j < 3; j++) {
 			String nowOp = opList.get(j);
 			// System.out.println("nowOp " + nowOp);
