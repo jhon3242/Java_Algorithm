@@ -58,10 +58,10 @@ public class main {
 
 
 	public static void main(String[] args) throws ParseException {
-//		int[] arr = new int[]{1,3,9};
-		int i = 1 << 2;
+		Float a = 0.42857143f;
+		Float b = 0.5f;
 
+		int i = a.compareTo(b);
 		System.out.println("i = " + i);
-
 	}
 }
