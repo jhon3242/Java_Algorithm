@@ -59,8 +59,9 @@ public class main {
 
 	public static void main(String[] args) throws ParseException {
 //		int[] arr = new int[]{1,3,9};
-		List<Integer> arr = new ArrayList<>();
+		int i = 1 << 2;
 
+		System.out.println("i = " + i);
 
 	}
 }
