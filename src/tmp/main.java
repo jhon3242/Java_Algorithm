@@ -61,9 +61,6 @@ public class main {
 //		int[] arr = new int[]{1,3,9};
 		List<Integer> arr = new ArrayList<>();
 
-		arr.add(1);
-		arr.add(2);
-		arr.add(0, -2);
-		System.out.println("arr = " + arr.remove(arr.size() - 1));
+
 	}
 }
