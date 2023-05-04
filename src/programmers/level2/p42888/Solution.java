@@ -1,8 +1,6 @@
 package programmers.level2.p42888;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Solution {
 	private HashMap<String, String> store = new HashMap<>();
@@ -49,3 +47,70 @@ public class Solution {
 		store.put(userId,userName);
 	}
 }
+
+
+/**
+ * 2회 차 인데
+ * 1회차 방법이 더 깔끔하고 좋을듯하다.
+ */
+//import java.util.*;
+//
+//class Solution {
+//	Map<String, User> users = new HashMap<>();
+//
+//	public String[] solution(String[] record) {
+//		List<String> records = new ArrayList<>();
+//
+//		for (String rec : record) {
+//			String[] recSplited = rec.split(" ");
+//			String recId = recSplited[1];
+//			if (recSplited[0].equals("Enter")) {
+//				records.add("Enter " + recId);
+//				if (!users.containsKey(recId)) {
+//					users.put(recId, new User(recId, recSplited[2]));
+//				} else {
+//					User tmpUser = users.get(recId);
+//					tmpUser.change(recSplited[2]);
+//				}
+//			} else if (recSplited[0].equals("Leave")) {
+//				records.add("Leave " + recId);
+//			} else {
+//				User tmpUser = users.get(recId);
+//				tmpUser.change(recSplited[2]);
+//			}
+//		}
+//
+//		return records.stream().map(str -> {
+//			String[] sp = str.split(" ");
+//			String status = sp[0].equals("Enter") ? "들어왔습니다." : "나갔습니다.";
+//			return users.get(sp[1]).username + "님이 " + status;
+//		}).toArray(String[]::new);
+//
+//		// for (String key : users.keySet()) {
+//		//     // System.out.println(users.get(key));
+//		// }
+//
+//
+//		// return records.toArray(new String[0]);
+//	}
+//}
+//
+//class User {
+//
+//	public String id ;
+//	public String username;
+//
+//	public User(String id, String username) {
+//		this.id = id;
+//		this.username = username;
+//	}
+//
+//	public void change(String newName) {
+//		this.username = newName;
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return "id " + this.id + " username " + this.username;
+//	}
+//}

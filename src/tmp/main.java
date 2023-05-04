@@ -58,10 +58,12 @@ public class main {
 
 
 	public static void main(String[] args) throws ParseException {
-		Float a = 0.42857143f;
-		Float b = 0.5f;
+		List<String> arr = new ArrayList<>();
 
-		int i = a.compareTo(b);
-		System.out.println("i = " + i);
+		arr.stream().map(v -> "asd")
+				.collect(Collectors.toList())
+				.toArray(new String[0]);
+
+
 	}
 }
