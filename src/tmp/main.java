@@ -2,8 +2,12 @@ package tmp;
 
 //import programmers.level2.p92341.Car;
 
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
+
 import java.text.ParseException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -58,11 +62,6 @@ public class main {
 
 
 	public static void main(String[] args) throws ParseException {
-		List<String> arr = new ArrayList<>();
-
-		arr.stream().map(v -> "asd")
-				.collect(Collectors.toList())
-				.toArray(new String[0]);
 
 
 	}
