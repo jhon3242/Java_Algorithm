@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * 1회차 시간초과
@@ -14,51 +15,50 @@ import java.util.List;
 
 public class Main {
 
-	private static List<Integer[]> store = new ArrayList<>();
-	private static int K;
 	private static int N;
-	private static int result = 0;
+	private static int K;
+	private static List<Integer[]> store = new ArrayList<>();
 	private static boolean[] visited;
+	private static int result = 0;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int[] info = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-		N = info[0];
-		K = info[1];
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
 		visited = new boolean[N + 1];
 
 		for (int i = 0; i < N; i++) {
-			String tmp = br.readLine();
-			if (tmp == null) break;
-			String[] sp = tmp.split(" ");
-			store.add(new Integer[]{Integer.parseInt(sp[0]), Integer.parseInt(sp[1])});
+			st = new StringTokenizer(br.readLine());
+			store.add(new Integer[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
 		}
 
-		dfs(0, 0, 0, 0);
-		System.out.println(result);
+		dfs(0, 0, new ArrayList<>());
+		System.out.println("result = " + result);
 	}
 
-	private static void dfs(int level, int start, int total, int value) {
+	private static void dfs(int start, int total, List<Integer> nums) {
 
-		if (level == N || total > K) return ;
-
-		result = Math.max(result, value);
+		if (total <= K) {
+			result = Math.max(result, nums.stream().mapToInt(Integer::intValue).sum());
+		}
 
 		for (int i = start; i < N; i++) {
-
-			if (!visited[i] && store.get(i)[0] + total <= K) {
-				visited[i] = true;
-				dfs(level + 1, i + 1, total + store.get(i)[0], value + store.get(i)[1]);
-				visited[i] = false;
+			Integer[] info = store.get(i);
+			if (total + info[0] <= K) {
+				nums.add(info[1]);
+				dfs(i + 1, total + info[0], nums);
+				nums.remove(nums.size() -1);
 			}
 		}
 	}
 }
 
 /**
- * 4 7
- * 6 13
- * 4 8
- * 3 6
- * 1 8
+4 7
+6 13
+4 8
+3 6
+1 8
  */
