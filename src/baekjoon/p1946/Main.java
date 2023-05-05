@@ -6,7 +6,10 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 /**
- 1회차 시간초과
+ 2회차 답 봤음
+
+ -  앞자리 기준으로 정렬하고 반복문을 돌면서 뒷자리만 비교해도 되는데
+    이 생각을 못해서 못푼듯
  */
 
 public class Main {
@@ -23,39 +26,24 @@ public class Main {
 				StringTokenizer st = new StringTokenizer(br.readLine());
 				store.add( new Integer[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
 			}
-			Collections.sort(store, (a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0] );
-			int result = op();
-			System.out.println(result);
-		}
-	}
 
-	private static int op() {
-		boolean[] fail = new boolean[N + 1];
+			Collections.sort(store, Comparator.comparingInt(a -> a[0]));
 
-		for (int i = 0; i < store.size(); i++) {
-			findFail(i, fail);
-		}
-		int result = N;
+//			store.forEach(a -> System.out.println(Arrays.toString(a)));
 
-		for (int i = 0; i < fail.length; i++) {
-			if (fail[i]) result--;
-		}
-		return result;
-	}
-
-	private static void findFail(int i, boolean[] fail) {
-		if (fail[i]) return;
-		Integer[] info = store.get(i);
-		for (int j = 0; j < store.size(); j++) {
-			Integer[] tmp = store.get(j);
-			if (info[0] < tmp[0] && info[1] < tmp[1]) {
-				fail[j] = true;
-				continue;
+			int answer = 1;
+			int min = store.get(0)[1];
+			for (int j = 1; j < store.size(); j++) {
+//				System.out.println("min = " + min + " target " + store.get(j)[1]);
+				if (min > store.get(j)[1]) {
+//					System.out.println("min " + Arrays.toString(store.get(j)));
+					answer++;
+					min = store.get(j)[1];
+				}
 			}
-
-			if (info[0] > tmp[0] && info[1] > tmp[1]) {
-				fail[i] = true;
-			}
+			System.out.println(answer);
 		}
 	}
+
+
 }
