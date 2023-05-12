@@ -63,6 +63,9 @@ public class main {
 
 	public static void main(String[] args) throws ParseException {
 
+		IntStream.range(0, 26).mapToObj(v ->String.valueOf((char)(v + 'A')))
+				.collect(Collectors.toList());
+
 
 	}
 }
