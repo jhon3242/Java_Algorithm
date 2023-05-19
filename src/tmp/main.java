@@ -63,9 +63,16 @@ public class main {
 
 	public static void main(String[] args) throws ParseException {
 
-		IntStream.range(0, 26).mapToObj(v ->String.valueOf((char)(v + 'A')))
-				.collect(Collectors.toList());
+		String line = "(()9)(3)";
+		Matcher matcher = Pattern.compile("(\\d*)\\((\\d*)\\)(\\d*)").matcher(line);
+//		Matcher matcher = Pattern.compile("(\\d)*\\((\\d)*\\)(\\d)*").matcher(line);
 
+		if (matcher.find()) {
+			System.out.println("matcher.group() = " + matcher.group());
+			System.out.println("matcher.group(1) = " + matcher.group(1));
+			System.out.println("matcher.group(2) = " + matcher.group(2));
+			System.out.println("matcher.group(3) = " + matcher.group(3));
+		}
 
 	}
 }
