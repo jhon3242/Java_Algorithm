@@ -7,8 +7,12 @@ import java.util.*;
 
 /**
  * 2차 시도
+ * 간단하게 왼쪽, 오른쪽 인덱스를 구하고
+ * 인덱스 안쪽 고인물을 더하는 방식으로 구했다.
  */
 class Main {
+	private static int[] graph;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
@@ -17,8 +21,42 @@ class Main {
 		int H = Integer.parseInt(st.nextToken());
 		int W = Integer.parseInt(st.nextToken());
 
-		st = new StringTokenizer(br.readLine());
+		graph = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 
+		int left = 0;
+		int right = 0;
+		int result = 0;
+
+		while (right < graph.length - 1) {
+			right = getRightIdx(left);
+			result += getWater(left, right);
+			left = right;
+		}
+		System.out.println(result);
+
+	}
+
+	private static int getRightIdx(int start) {
+		int result = graph.length - 1;
+		int maxSize = 0;
+		for (int i = start + 1; i < graph.length; i++) {
+			if (graph[i] >= maxSize) {
+				maxSize = graph[i];
+				result = i;
+			}
+			if (graph[i] >= graph[start]) break;
+		}
+		return result;
+	}
+
+	private static int getWater(int left, int right) {
+		int standard = Math.min(graph[left], graph[right]);
+		int result = 0;
+
+		for (int i = left + 1; i < right; i++) {
+			result += standard - graph[i];
+		}
+		return result;
 	}
 }
 
