@@ -3,150 +3,53 @@ package baekjoon.p2504;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Stack;
 
 /**
- * 2차시도
- * NumberOfFormat 런타임 발생
+ * 3차 시도
+ * 정답 확인
+ * 2(a + b) 를 2a + 2b 로 생각할 수 있었으면 풀 수 있었을듯?
+ * 열린괄호가 오면 value 를 곱하고 닫힌괄호가 오면  value 를 나누는
+ * 아이디어를 생각하지 못했음
  */
-
 public class Main {
-	private static Stack<Character> stack;
-	private static Stack<Integer> resultStack;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		stack = new Stack<>();
-		String line = br.readLine();
+		String  N = br.readLine();
+		Stack<Character> stack = new Stack<>();
+		int result = 0;
+		int value = 1;
 
-
-		if (isFail(line)) {
-			System.out.println(0);
-			return;
-		}
-		int result = op(line);
-		System.out.println(result);
-
-//		System.out.println(isFail("(())[][]"));
-	}
-
-	public static boolean isFail(String line) {
-		int a = 0;
-		int b = 0;
-		for (int i = 0; i < line.length(); i++) {
-			if (line.charAt(i) == '(') a++;
-			if (line.charAt(i) == '[') b++;
-			if (line.charAt(i) == ')') a--;
-			if (line.charAt(i) == ']') b--;
-
-			if (a < 0 || b < 0) return true;
-		}
-		return a != 0 || b != 0;
-	}
-
-	// (2()()[[]])([])
-	public static int op(String line) {
-
-		boolean isEnd = true;
-		while (isEnd) {
-			isEnd = false;
-			Matcher matcher2 = Pattern.compile("(\\d*)\\((\\d*)\\)(\\d*)").matcher(line);
-
-//			if (!matcher2.matches() && !matcher3.matches()) break;
-//			String group = matcher2.group();
-//			System.out.println("group = " + group);
-//			System.out.println("matcher.group(1) = " + matcher2.group(1));
-//			System.out.println("matcher.group(2) = " + matcher2.group(2));
-//			System.out.println("matcher.group(3) = " + matcher2.group(3));
-			String prefix, suffix, midfix;
-			int preNum, midNum, sufNum;
-
-			if (matcher2.find()) {
-//				System.out.println("matcher.group(3) = " + matcher2.group(3));
-				prefix = matcher2.group(1);
-				preNum = 0;
-				if (!Objects.equals(prefix, "")) {
-					preNum = Integer.parseInt(matcher2.group(1));
+		for (int i = 0; i < N.length(); i++) {
+			if (N.charAt(i) == '(') {
+				value *= 2;
+				stack.push(N.charAt(i));
+			} else if (N.charAt(i) == '[') {
+				value *= 3;
+				stack.push(N.charAt(i));
+			} else if (N.charAt(i) == ')') {
+				if (stack.isEmpty() || stack.peek() != '(') {
+					result = 0;
+					break;
 				}
-				suffix = matcher2.group(3);
-				sufNum = 0;
-				if (!Objects.equals(suffix, "")) {
-					sufNum = Integer.parseInt(matcher2.group(3));
+				if (N.charAt(i - 1) == '(') {
+					result += value;
 				}
-
-				midfix = matcher2.group(2);
-				midNum = 1;
-				if (!Objects.equals(midfix, "")) {
-					midNum = Integer.parseInt(matcher2.group(2));
+				value /= 2;
+				stack.pop();
+			} else if (N.charAt(i) == ']') {
+				if (stack.isEmpty() || stack.peek() != '[') {
+					result = 0;
+					break;
 				}
-				line = matcher2.replaceFirst(String.valueOf(preNum + 2 * midNum + sufNum));
-				isEnd = true;
-//				System.out.println("line = " + line);
-			}
-			Matcher matcher3 = Pattern.compile("(\\d*)\\[(\\d*)\\](\\d*)").matcher(line);
-			if (matcher3.find()) {
-
-				prefix = matcher3.group(1);
-				preNum = 0;
-				if (!Objects.equals(prefix, "")) {
-					preNum = Integer.parseInt(matcher3.group(1));
+				if (N.charAt(i - 1) == '[') {
+					result += value;
 				}
-				suffix = matcher3.group(3);
-				sufNum = 0;
-				if (!Objects.equals(suffix, "")) {
-					sufNum = Integer.parseInt(matcher3.group(3));
-				}
-
-				midfix = matcher3.group(2);
-				midNum = 1;
-				if (!Objects.equals(midfix, "")) {
-					midNum = Integer.parseInt(matcher3.group(2));
-				}
-				line = matcher3.replaceFirst(String.valueOf(preNum + 3 * midNum + sufNum));
-				isEnd = true;
-//				System.out.println("line = " + line);
+				value /= 3;
+				stack.pop();
 			}
 		}
-
-		return Integer.parseInt(line);
-
-//		line = line.replaceAll("\\(\\)", "2");
-//		line = line.replaceAll("\\[\\]", "3");
-//		System.out.println("line = " + line);
-//
-//		line = line.replaceAll("23", "5");
-//		line = line.replaceAll("32", "5");
-//		line = line.replaceAll("33", "6");
-//		line = line.replaceAll("22", "4");
-//		System.out.println("line = " + line);
-//
-//
-//		Matcher mul2 = Pattern.compile("(\\()([0-9]+)(\\))").matcher(line);
-//
-//		if (mul2.find()) {
-//			String group = mul2.group();
-//			int replaceNum = Integer.parseInt(mul2.group(2)) * 2;
-//			line = mul2.replaceAll("" + replaceNum);
-//		}
-//		System.out.println("line = " + line);
-//
-//		Matcher mul3 = Pattern.compile("(\\[)([0-9]+)(\\])").matcher(line);
-//		if (mul3.find()) {
-//			String group = mul3.group();
-//			int replaceNum = Integer.parseInt(mul3.group(2)) * 3;
-//			line = mul3.replaceAll("" + replaceNum);
-//		}
-//		System.out.println("line = " + line);
-
-//		StringBuilder sb = new StringBuilder(line);
-//
-////		sb.rep
-//
-//		for (int i = 0; i < line.length(); i++) {
-//
-//		}
-
-//		return 0;
+		if (!stack.isEmpty()) System.out.println(0);
+		else System.out.println(result);
 	}
 }
