@@ -1,8 +1,6 @@
-package x_lib.diff;
+package x_lib.programersDiff;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Diff {
 	private static int[] getRandomIntArr(int size, int[] range) {
