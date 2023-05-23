@@ -63,16 +63,9 @@ public class main {
 
 	public static void main(String[] args) throws ParseException {
 
-		String line = "(()9)(3)";
-		Matcher matcher = Pattern.compile("(\\d*)\\((\\d*)\\)(\\d*)").matcher(line);
-//		Matcher matcher = Pattern.compile("(\\d)*\\((\\d)*\\)(\\d)*").matcher(line);
+		String[] strArr = new String[4];
 
-		if (matcher.find()) {
-			System.out.println("matcher.group() = " + matcher.group());
-			System.out.println("matcher.group(1) = " + matcher.group(1));
-			System.out.println("matcher.group(2) = " + matcher.group(2));
-			System.out.println("matcher.group(3) = " + matcher.group(3));
-		}
+		System.out.println(strArr[3]);
 
 	}
 }
