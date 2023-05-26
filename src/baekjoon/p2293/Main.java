@@ -3,32 +3,32 @@ package baekjoon.p2293;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
-
-/**
- * 1 2 5
- * 1 ...
- * 2 + 5
- * 2 2 + 4
- *
- *
- */
+import java.util.*;
 
 public class Main {
-	static int n, k;
-	static boolean[] canMake;
+	private static int N, K;
+	private static int coin;
+	private static int[] dp;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		n = Integer.parseInt(st.nextToken());
-		k = Integer.parseInt(st.nextToken());
-		canMake = new boolean[k + 1];
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		dp = new int[K + 1];
 
-		for (int i = 0; i < n; i++) {
-			int coin = Integer.parseInt(br.readLine());
-			int j = 0;
+		dp[0] = 1;
+
+		for (int i = 0; i < N; i++) {
+			coin = Integer.parseInt(br.readLine());
+			for (int j = 1; j < K + 1; j++) {
+				if (j >= coin) {
+					dp[j] = dp[j] + dp[j - coin];
+				}
+			}
 		}
+		System.out.println(dp[K]);
 	}
 }
 
