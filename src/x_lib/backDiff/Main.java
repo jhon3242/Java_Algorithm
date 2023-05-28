@@ -22,43 +22,115 @@ public class Main {
 //		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 //		StringTokenizer st = new StringTokenizer(br.readLine());
 
-		for (int i = 0; i < 10; i++) {
-			int N = getRandomNum(new int[]{10, 11});
-			int S = getRandomNum(new int[]{45, 45});
-
-			int[] arr = getRandomIntArr(N, new int[]{1, 10});
-
-			int my = My.op(N, S, arr);
-			int an = An.op(N, S, arr);
-			if (my != an) {
-				System.out.println(Arrays.toString(arr));
-				System.out.println("S = " + S);
-				System.out.println("my = " + my + " an = " + an);
-			}
+		for (int i = 0; i < 100; i++) {
+			My my = new My();
+			my.main(i);
 		}
+
+//		for (int i = 0; i < 10; i++) {
+//			int N = getRandomNum(new int[]{10, 11});
+//			int S = getRandomNum(new int[]{45, 45});
+//
+//			int[] arr = getRandomIntArr(N, new int[]{1, 10});
+//
+//			int my = My.op(N, S, arr);
+//			int an = An.op(N, S, arr);
+//			if (my != an) {
+//				System.out.println(Arrays.toString(arr));
+//				System.out.println("S = " + S);
+//				System.out.println("my = " + my + " an = " + an);
+//			}
+//		}
 
 	}
 }
 
 
 class My {
-	public static int op(int N, int S, int[] arr) {
-		int s = 0;
-		int e = 0;
-		int sum = 0;
-		int min = Integer.MAX_VALUE;
+	private int N;
+	private int[][] dp = new int[11][10];
+	private int sum = -1; // 한자리 0 은 카운트 되면 안되기 때문
+	private int level = 1;
+	private int digit = 0;
 
-		while (s < N) {
-			if (sum >= S) {
-				min = Math.min(e - s, min);
-				sum -= arr[s++];
-			} else if (e == N) {
-				break;
-			} else {
-				sum += arr[e++];
-			}
+	public void main(int n) {
+//		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = n;
+
+
+		op();
+
+		if (sum < N) {
+			System.out.println(-1);
+			return;
 		}
-		return min;
+
+//		System.out.println("level = " + level);
+//		System.out.println("sum = " + sum);
+//		System.out.println("digit = " + digit);
+		getResult();
+	}
+
+	private void op() {
+		while (level <= 10) {
+			for (digit = level - 1; digit < 10; digit++) {
+				if (level == 1) {
+					dp[level][digit] = 1;
+				} else {
+					dp[level][digit] = getArrSum(digit, level - 1);
+				}
+				sum += dp[level][digit];
+				if (sum >= N) return;
+			}
+			level++;
+		}
+	}
+
+	private int getArrSum(int i, int level) {
+		int result = 0;
+		for (int j = 0; j < i; j++) {
+			result += dp[level][j];
+		}
+		return result;
+	}
+
+	private void getResult() {
+		StringBuilder numStr = new StringBuilder();
+
+		for (int i = 0; i < level; i++) {
+			numStr.append(digit - i);
+		}
+
+		int tmpLevel = level - 1;
+		int tmpDigit = digit - 1;
+
+		if (sum == N) {
+			System.out.println(numStr);
+			return;
+		}
+
+		while (true) {
+			if (sum - dp[tmpLevel][tmpDigit] > N) {
+				sum -= dp[tmpLevel][tmpDigit];
+				tmpDigit--;
+				numStr.replace(numStr.length() -
+						tmpLevel, numStr.length() - tmpLevel + 1, String.valueOf(tmpDigit));
+				continue;
+			}
+			if (sum - dp[tmpLevel][tmpDigit] == N) {
+				for (int i = tmpLevel; i >= 1; i--) {
+					tmpDigit--;
+					numStr.replace(numStr.length() -
+							i, numStr.length() - i + 1, String.valueOf(tmpDigit));
+				}
+				System.out.println(numStr);
+				return ;
+			}
+			tmpDigit--;
+			tmpLevel--;
+			numStr.replace(numStr.length() -
+					tmpLevel, numStr.length() - tmpLevel + 1, String.valueOf(tmpDigit));
+		}
 	}
 }
 
