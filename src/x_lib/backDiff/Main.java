@@ -3,9 +3,7 @@ package x_lib.backDiff;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Random;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
 	private static int[] getRandomIntArr(int size, int[] range) {
@@ -19,160 +17,112 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 
-//		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < 1; i++) {
+			int n = getRandomNum(new int[]{1, 10});
+			int k = getRandomNum(new int[]{1, 10});
+			List<Integer[]> road = new ArrayList<>();
 
-		for (int i = 0; i < 100; i++) {
-			My my = new My();
-			my.main(i);
+			for (int j = 0; j < k; j++) {
+				road.add(new Integer[]{getRandomNum(new int[]{1, n}), getRandomNum(new int[]{1, n})});
+			}
+
+			int myResult = My.main(n, road);
+			int anResult = An.main(n, road);
+
+			if (myResult != anResult) {
+				System.out.println("myResult = " + myResult + " anResult " + anResult);
+				for (Integer[] integers : road) {
+					System.out.println(Arrays.toString(integers));
+				}
+			}
 		}
-
-//		for (int i = 0; i < 10; i++) {
-//			int N = getRandomNum(new int[]{10, 11});
-//			int S = getRandomNum(new int[]{45, 45});
-//
-//			int[] arr = getRandomIntArr(N, new int[]{1, 10});
-//
-//			int my = My.op(N, S, arr);
-//			int an = An.op(N, S, arr);
-//			if (my != an) {
-//				System.out.println(Arrays.toString(arr));
-//				System.out.println("S = " + S);
-//				System.out.println("my = " + my + " an = " + an);
-//			}
-//		}
 
 	}
 }
 
 
 class My {
-	private int N;
-	private int[][] dp = new int[11][10];
-	private int sum = -1; // 한자리 0 은 카운트 되면 안되기 때문
-	private int level = 1;
-	private int digit = 0;
+	private static int N;
+	private static int[] parents;
 
-	public void main(int n) {
-//		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static int main(int n, List<Integer[]> road) {
+
+
 		N = n;
+		parents = new int[N + 1];
 
-
-		op();
-
-		if (sum < N) {
-			System.out.println(-1);
-			return;
+		for (int i = 1; i <= N; i++) {
+			parents[i] = i;
 		}
 
-//		System.out.println("level = " + level);
-//		System.out.println("sum = " + sum);
-//		System.out.println("digit = " + digit);
-		getResult();
-	}
-
-	private void op() {
-		while (level <= 10) {
-			for (digit = level - 1; digit < 10; digit++) {
-				if (level == 1) {
-					dp[level][digit] = 1;
-				} else {
-					dp[level][digit] = getArrSum(digit, level - 1);
-				}
-				sum += dp[level][digit];
-				if (sum >= N) return;
+		for (int i = 0; i < road.size(); i++) {
+			Integer[] ro = road.get(i);
+			int a = ro[0];
+			int b = ro[1];
+			if (findParents(a) != findParents(b)) {
+				unionParents(a, b);
 			}
-			level++;
 		}
-	}
 
-	private int getArrSum(int i, int level) {
 		int result = 0;
-		for (int j = 0; j < i; j++) {
-			result += dp[level][j];
+		for (int i = 2; i <= N; i++) {
+			if (findParents(i) == findParents(1)) result++;
 		}
 		return result;
 	}
 
-	private void getResult() {
-		StringBuilder numStr = new StringBuilder();
+	private static int findParents(int x) {
+		if (parents[x] != x) parents[x] = findParents(parents[x]);
+		return parents[x];
+	}
 
-		for (int i = 0; i < level; i++) {
-			numStr.append(digit - i);
-		}
-
-		int tmpLevel = level - 1;
-		int tmpDigit = digit - 1;
-
-		if (sum == N) {
-			System.out.println(numStr);
-			return;
-		}
-
-		while (true) {
-			if (sum - dp[tmpLevel][tmpDigit] > N) {
-				sum -= dp[tmpLevel][tmpDigit];
-				tmpDigit--;
-				numStr.replace(numStr.length() -
-						tmpLevel, numStr.length() - tmpLevel + 1, String.valueOf(tmpDigit));
-				continue;
-			}
-			if (sum - dp[tmpLevel][tmpDigit] == N) {
-				for (int i = tmpLevel; i >= 1; i--) {
-					tmpDigit--;
-					numStr.replace(numStr.length() -
-							i, numStr.length() - i + 1, String.valueOf(tmpDigit));
-				}
-				System.out.println(numStr);
-				return ;
-			}
-			tmpDigit--;
-			tmpLevel--;
-			numStr.replace(numStr.length() -
-					tmpLevel, numStr.length() - tmpLevel + 1, String.valueOf(tmpDigit));
-		}
+	private static void unionParents(int a, int b) {
+		int aR = findParents(a);
+		int bR = findParents(b);
+		if (aR < bR) parents[b] = aR;
+		else parents[a] = bR;
 	}
 }
 
 class An {
-	private static int minCount;
+	private static int N;
+	private static boolean[][] graph;
+	private static boolean[] visited;
 
-	public static int op(int N, int S, int[] array) {
-		minCount = N + 1;
+	public static int main(int n, List<Integer[]> road) {
+		N = n;
+		graph = new boolean[N + 1][N + 1];
+		visited = new boolean[N + 1];
 
-
-		// exception ck
-		if (sumArr(array) < S){
-			return 0;
+		for (int i = 0; i < road.size(); i++) {
+			Integer[] ro = road.get(i);
+			int a = ro[0];
+			int b = ro[1];
+			graph[a][b] = true;
+			graph[b][a] = true;
 		}
 
-		int start = 0;
-		int end = 1;
-		int sumTmp = array[start];
-
-		while (start < end && end <= N){
-			if (sumTmp >= S){
-				minCount = Math.min(minCount, end - start);
-				sumTmp -= array[start];
-				start++;
-			}
-			else{
-				if (end < N){
-					sumTmp += array[end];
-				}
-				end++;
-			}
-		}
-		return minCount;
+		return bfs();
 	}
 
-	private static int sumArr(int[] array) {
-		int tmp;
+	private static int bfs() {
+		Queue<Integer> q = new LinkedList<>();
+		int count = -1; // 1 번 컴퓨터는 카운트 되면 안되기 때문에 -1 로 시작
 
-		tmp = 0;
-		for (int i = 0; i < array.length; i++) {
-			tmp += array[i];
+		q.add(1);
+		while (!q.isEmpty()) {
+			Integer node = q.poll();
+			if (!visited[node]) {
+				visited[node] = true;
+				count++;
+
+				for (int i = 1; i <= N; i++) {
+					if (!visited[i] && graph[node][i]) {
+						q.add(i);
+					}
+				}
+			}
 		}
-		return tmp;
+		return count;
 	}
 }
