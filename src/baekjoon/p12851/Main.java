@@ -9,9 +9,8 @@ import java.util.StringTokenizer;
 public class Main {
 	private static int N;
 	private static int K;
-	private static boolean[] visited = new boolean[100_001];
 	private static int sameCount = 0;
-	private static int minMoveCount = Integer.MAX_VALUE;
+	private static int[] dp = new int[100_001];
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,43 +19,48 @@ public class Main {
 		N = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
 
+
 		bfs();
-		System.out.println(minMoveCount);
+		System.out.println(dp[K] - 1);
 		System.out.println(sameCount);
 	}
 
 	private static void bfs() {
 		PriorityQueue<Node> pq = new PriorityQueue<>();
 
-		pq.add(new Node(N, 0));
-
+		pq.add(new Node(N, 1));
 		while (!pq.isEmpty()) {
 			Node poll = pq.poll();
+			if (poll.cur < 0 || poll.cur > 100_000) continue;
+			if (dp[poll.cur] != 0 && poll.count > dp[poll.cur]) continue;
 
-			if (poll.count > minMoveCount) return;
-			if (poll.idx < 0 || poll.idx > 100_000) continue;
-
-			if (poll.idx == K) {
-				minMoveCount = poll.count;
+			if (poll.cur == K) {
+				if (dp[poll.cur] == 0 || dp[poll.cur] > poll.count) {
+					dp[poll.cur] = poll.count;
+					sameCount = 1;
+					continue;
+				}
+				if (poll.count > dp[poll.cur]) return;
 				sameCount++;
 				continue;
 			}
 
-			if (!visited[poll.idx]) {
-				visited[poll.idx] = true;
-				pq.add(new Node(poll.idx - 1, poll.count + 1));
-				pq.add(new Node(poll.idx + 1, poll.count + 1));
-				pq.add(new Node(poll.idx * 2, poll.count + 1));
+			if (dp[poll.cur] == 0 || dp[poll.cur] > poll.count) {
+				dp[poll.cur] = poll.count;
+				pq.add(new Node(poll.cur + 1, poll.count + 1));
+				pq.add(new Node(poll.cur - 1, poll.count + 1));
+				pq.add(new Node(poll.cur * 2, poll.count + 1));
 			}
 		}
+
 	}
 
 	static class Node implements Comparable<Node> {
-		int idx;
+		int cur;
 		int count;
 
-		public Node(int idx, int count) {
-			this.idx = idx;
+		public Node(int cur, int count) {
+			this.cur = cur;
 			this.count = count;
 		}
 

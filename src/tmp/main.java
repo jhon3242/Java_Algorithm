@@ -63,9 +63,8 @@ public class main {
 
 	public static void main(String[] args) throws ParseException {
 
-		String[] strArr = new String[4];
 
-		System.out.println(strArr[3]);
+
 
 	}
 }
