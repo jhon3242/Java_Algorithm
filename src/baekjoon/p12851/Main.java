@@ -3,6 +3,8 @@ package baekjoon.p12851;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -18,32 +20,63 @@ public class Main {
 		N = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
 
-		dfs(N, 1);
+		Arrays.fill(dp, -1);
+		bfs();
+
+		System.out.println(dp[K]);
+		System.out.println(sameCount);
 	}
 
-	private static void dfs(int cur, int count) {
-		if (cur == K) {
-			if (dp[cur] > count) {
-				dp[cur] = count;
-				sameCount = 1;
+	private static void bfs() {
+		PriorityQueue<Node> pq = new PriorityQueue<>();
+
+		pq.add(new Node(N, 0));
+		while (!pq.isEmpty()) {
+			Node poll = pq.poll();
+			// 유효하지 않는 값이면 넘기기
+			if (poll.pos < 0 || poll.pos > 100000) continue;
+
+			// 더이상 더 작은 경우가 안나오는 경우 종료
+			if (dp[K] != -1 && dp[K] < poll.count) return;
+
+			if (poll.pos == K) {
+
+
+				// 값이 바뀌는 경우 업데이트
+				if (dp[K] == -1 || dp[K] > poll.count) {
+					dp[K] = poll.count;
+					sameCount = 1;
+					continue;
+				}
+
+				if (dp[K] == poll.count) {
+					sameCount++;
+				}
+				continue;
 			}
-			if (dp[cur] == count) {
-				sameCount++;
+
+			if (dp[poll.pos] == -1 || dp[poll.pos] >= poll.count) {
+				dp[poll.pos] = poll.count;
+				pq.add(new Node(poll.pos + 1, poll.count + 1));
+				pq.add(new Node(poll.pos - 1, poll.count + 1));
+				pq.add(new Node(poll.pos * 2, poll.count + 1));
 			}
-			return;
+		}
+	}
+
+
+	static class Node implements Comparable<Node> {
+		int pos;
+		int count;
+
+		public Node(int pos, int count) {
+			this.pos = pos;
+			this.count = count;
 		}
 
-		if (cur < 0 || cur > 100_000) return;
-		if (dp[cur] != 0 && dp[cur] <= count) return;
-
-		dp[cur] = count;
-		System.out.println("cur = " + cur + " count " + count);
-
-		dfs(cur * 2, count + 1);
-		dfs(cur + 1, count + 1);
-		dfs(cur - 1, count + 1);
+		@Override
+		public int compareTo(Node o) {
+			return count - o.count;
+		}
 	}
-
-
-
 }
