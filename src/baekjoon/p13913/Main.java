@@ -20,7 +20,7 @@ public class Main {
 		Arrays.fill(dp, -1);
 		bfs();
 
-//		System.out.println(dp[K]);
+
 //		System.out.println(sameCount);
 	}
 
@@ -29,34 +29,31 @@ public class Main {
 
 		pq.add(new Node(N, 0));
 		while (!pq.isEmpty()) {
+			// 유요한 경우만 큐에 넣는다.
 			Node poll = pq.poll();
-			// 유효하지 않는 값이면 넘기기
-			if (poll.pos < 0 || poll.pos > 100000) continue;
 
-			// 더이상 더 작은 경우가 안나오는 경우 종료
-			if (dp[K] != -1 && dp[K] < poll.count) return;
-
+			dp[poll.pos] = poll.count;
 			if (poll.pos == K) {
-
-
-				// 값이 바뀌는 경우 업데이트
-				if (dp[K] == -1 || dp[K] > poll.count) {
-					dp[K] = poll.count;
-					System.out.println(poll.count);
-					System.out.println(poll.list);
-					return;
-				}
-
-				continue;
+				System.out.println(dp[K]);
+				System.out.println(poll.list);
+				return;
 			}
 
-			if (dp[poll.pos] == -1 || dp[poll.pos] > poll.count) {
-				dp[poll.pos] = poll.count;
+			if (isValid(poll.pos + 1, poll.count + 1)) {
 				pq.add(new Node(poll.pos + 1, poll.count + 1, poll.list));
+			}
+			if (isValid(poll.pos - 1, poll.count + 1)) {
 				pq.add(new Node(poll.pos - 1, poll.count + 1, poll.list));
+			}
+			if (isValid(poll.pos * 2, poll.count + 1)) {
 				pq.add(new Node(poll.pos * 2, poll.count + 1, poll.list));
 			}
+
 		}
+	}
+
+	private static boolean isValid(int x, int count) {
+		return 0 <= x && x <= 100_000 && (dp[x] == -1 || dp[x] > count);
 	}
 
 
