@@ -6,37 +6,40 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int N;
-	static int[] maxPayArr;
-	static int[] timeArr;
-	static int[] payArr;
+	private static int N;
+	private static int[] t;
+	private static int[] p;
+	private static int[] dp;
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
-
-		// init
 		N = Integer.parseInt(br.readLine());
-		maxPayArr = new int[N];
-		payArr = new int[N];
-		timeArr = new int[N];
+		t = new int[N];
+		p = new int[N];
+		dp = new int[N + 1];
+
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
-			int t = Integer.parseInt(st.nextToken());
-			int p = Integer.parseInt(st.nextToken());
-			timeArr[i] = t;
-			payArr[i] = p;
+			t[i] = Integer.parseInt(st.nextToken());
+			p[i] = Integer.parseInt(st.nextToken());
 		}
 
-		int max = 0;
-		for (int i = N - 1; i >= 0; i--) {
-			if (timeArr[i] + i <= N) {
-				if (i + timeArr[i] < N )
-					max = Math.max(max, payArr[i] +  maxPayArr[timeArr[i] + i]);
-				else
-					max = Math.max(max, payArr[i]);
+		for (int i = 0; i <= N; i++) {
+
+			if (i > 0) {
+				dp[i] = Math.max(dp[i], dp[i - 1]);
 			}
-			maxPayArr[i] = max;
+
+			if (i < N) {
+				if (i + t[i] > N) continue;
+				dp[i + t[i]] = Math.max(dp[i + t[i]], dp[i] + p[i]);
+			}
 		}
-		System.out.println(maxPayArr[0]);
+
+		System.out.println(dp[N]);
 	}
 }
+
+
+
