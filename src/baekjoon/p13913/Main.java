@@ -32,6 +32,10 @@ public class Main {
 			// 유요한 경우만 큐에 넣는다.
 			Node poll = pq.poll();
 
+			if (dp[poll.pos] != -1 && dp[poll.pos] < poll.count) {
+				continue;
+			}
+
 			dp[poll.pos] = poll.count;
 			if (poll.pos == K) {
 				System.out.println(dp[K]);
