@@ -8,7 +8,8 @@ import java.util.*;
 public class Main {
 	private static int N;
 	private static int K;
-	private static int[] dp = new int[100_001];
+	private static StringBuilder result = new StringBuilder();
+	private static int count = 0;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,75 +18,50 @@ public class Main {
 		N = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
 
-		Arrays.fill(dp, -1);
-		bfs();
+		dfs(N, K);
 
-
-//		System.out.println(sameCount);
+		System.out.println(count);
+		System.out.println(result);
 	}
 
-	private static void bfs() {
-		PriorityQueue<Node> pq = new PriorityQueue<>();
+	private static void dfs(int cur, int end) {
 
-		pq.add(new Node(N, 0));
-		while (!pq.isEmpty()) {
-			// 유요한 경우만 큐에 넣는다.
-			Node poll = pq.poll();
-
-			if (dp[poll.pos] != -1 && dp[poll.pos] < poll.count) {
-				continue;
-			}
-
-			dp[poll.pos] = poll.count;
-			if (poll.pos == K) {
-				System.out.println(dp[K]);
-				System.out.println(poll.list);
-				return;
-			}
-
-			if (isValid(poll.pos + 1, poll.count + 1)) {
-				pq.add(new Node(poll.pos + 1, poll.count + 1, poll.list));
-			}
-			if (isValid(poll.pos - 1, poll.count + 1)) {
-				pq.add(new Node(poll.pos - 1, poll.count + 1, poll.list));
-			}
-			if (isValid(poll.pos * 2, poll.count + 1)) {
-				pq.add(new Node(poll.pos * 2, poll.count + 1, poll.list));
-			}
-
-		}
-	}
-
-	private static boolean isValid(int x, int count) {
-		return 0 <= x && x <= 100_000 && (dp[x] == -1 || dp[x] > count);
-	}
-
-
-	static class Node implements Comparable<Node> {
-		int pos;
-		int count;
-		String list;
-
-		public Node(int pos, int count) {
-			this.pos = pos;
-			this.count = count;
-			this.list = "" + pos;
+		if (cur == end) {
+			result.append(end);
+			result.append(" ");
+			return;
 		}
 
-		public Node(int pos, int count, String list) {
-			this.pos = pos;
-			this.count = count;
-			this.list = list + " " + pos;
+		if (cur > end) {
+			count += cur - end;
+			for (int i = cur; i >= end; i--) {
+				result.append(i);
+				result.append(" ");
+			}
+			return;
 		}
 
-		public int getPos() {
-			return pos;
-		}
+		int div = end / 2;
+		int divDiff = Math.abs(cur - div);
+		int curDiff = Math.abs(cur - end);
+		if (divDiff < curDiff) {
+			dfs(cur, div);
+			if (end % 2 == 1) {
+				result.append(end - 1);
+				result.append(" ");
+				count++;
+			}
+			result.append(end);
+			result.append(" ");
+			count++;
 
-		@Override
-		public int compareTo(Node o) {
-			return count - o.count;
-		}
 
+		} else {
+			count += end - cur;
+			for (int i = cur; i <= end; i++) {
+				result.append(i);
+				result.append(" ");
+			}
+		}
 	}
 }
