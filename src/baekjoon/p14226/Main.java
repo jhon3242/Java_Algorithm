@@ -11,8 +11,13 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		S = Integer.parseInt(br.readLine());
-		bfs();
 
+		for (int i = 0; i < dp.length; i++) {
+			dp[i] = i;
+		}
+
+		bfs();
+		System.out.println();
 	}
 
 	private static void bfs() {
@@ -22,23 +27,36 @@ public class Main {
 		while (!pq.isEmpty()) {
 			Node poll = pq.poll();
 
-			if (poll.pos < 0 || poll.pos > 2000) continue;
+			if (dp[poll.pos] == -1 || dp[poll.pos] > poll.count) {
+				dp[poll.pos] = poll.count;
+			}
 
 			if (poll.pos == S) {
 				System.out.println(poll.count);
 				return;
 			}
 
-			if (dp[poll.pos] == 0 || (dp[poll.pos] != 0 && dp[poll.pos] >= poll.count)) {
-				dp[poll.pos] = poll.count;
-			}
-			if (poll.clip <= poll.pos) {
-				pq.add(new Node(poll.pos - 1, poll.count + 1, poll.clip));
-				pq.add(new Node(poll.pos + 1, poll.count + 1, poll.clip));
-				pq.add(new Node(poll.pos + poll.clip, poll.count + 1, poll.clip));
+			// 1. copy clip
+			if (poll.pos != poll.clip) {
 				pq.add(new Node(poll.pos, poll.count + 1, poll.pos));
 			}
+
+			// 2. past
+			if (isValidate(poll.pos + poll.clip, poll.count + 1)) {
+				pq.add(new Node(poll.pos + poll.clip, poll.count + 1, poll.clip));
+			}
+
+			// 3. delete
+			if (isValidate(poll.pos - 1, poll.count + 1)) {
+				pq.add(new Node(poll.pos - 1, poll.count + 1, poll.clip));
+			}
 		}
+	}
+
+	private static boolean isValidate(int pos, int count) {
+		if (pos < 0 || pos > 2000) return false;
+		if (dp[pos] < count) return false;
+		return true;
 	}
 
 
@@ -58,5 +76,4 @@ public class Main {
 			return count - o.count;
 		}
 	}
-
 }
