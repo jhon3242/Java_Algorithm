@@ -3,23 +3,14 @@ package baekjoon.p12865;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
-
-/**
- * 1회차 시간초과
- * 6%
- */
+import java.util.*;
 
 public class Main {
 
 	private static int N;
 	private static int K;
-	private static List<Integer[]> store = new ArrayList<>();
-	private static boolean[] visited;
-	private static int result = 0;
+	private static PriorityQueue<Node> pq = new PriorityQueue<>();
+	private static int[] dp = new int[100_001];
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,38 +18,153 @@ public class Main {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		K = Integer.parseInt(st.nextToken());
-		visited = new boolean[N + 1];
 
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
-			store.add(new Integer[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
+			pq.add(new Node(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
 		}
 
-		dfs(0, 0, new ArrayList<>());
-		System.out.println("result = " + result);
+		while (!pq.isEmpty()) {
+			Node poll = pq.poll();
+			int w = poll.w;
+			int v = poll.v;
+
+			for (int i = 1; i < w; i++) {
+				if (dp[i] > 0 && isUpdate(w, v, i)) {
+					dp[i + w] = dp[i] + v;
+				}
+			}
+			dp[w] = Math.max(dp[w], v);
+		}
+		int result = 0;
+		for (int i = 1; i <= K; i++) {
+			result = Math.max(result, dp[i]);
+		}
+		System.out.println(result);
 	}
 
-	private static void dfs(int start, int total, List<Integer> nums) {
+	private static boolean isUpdate(int w, int v, int i) {
+		return i + w <= 100_000 && dp[i] + v > dp[i + w];
+	}
 
-		if (total <= K) {
-			result = Math.max(result, nums.stream().mapToInt(Integer::intValue).sum());
+	static class Node implements Comparable<Node> {
+		int w;
+		int v;
+
+		public Node(int w, int v) {
+			this.w = w;
+			this.v = v;
 		}
 
-		for (int i = start; i < N; i++) {
-			Integer[] info = store.get(i);
-			if (total + info[0] <= K) {
-				nums.add(info[1]);
-				dfs(i + 1, total + info[0], nums);
-				nums.remove(nums.size() -1);
-			}
+		@Override
+		public int compareTo(Node o) {
+			return w - o.w;
 		}
 	}
 }
 
 /**
-4 7
+
+100 100000
 6 13
 4 8
 3 6
-1 8
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+6 13
+4 8
+3 6
+5 12
+3 6
+5 12
+
  */
