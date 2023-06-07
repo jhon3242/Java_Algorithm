@@ -44,9 +44,12 @@ public class Main {
 		int div = end / 2;
 		int divDiff = Math.abs(cur - div);
 		int curDiff = Math.abs(cur - end);
+
 		if (divDiff < curDiff) {
+
 			dfs(cur, div);
-			if (end % 2 == 1) {
+
+			if (end != 1 && end % 2 == 1) {
 				result.append(end - 1);
 				result.append(" ");
 				count++;
