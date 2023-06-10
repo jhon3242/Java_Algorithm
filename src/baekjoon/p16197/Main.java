@@ -6,7 +6,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
+
+
 
 public class Main {
 	private static int N;
@@ -14,6 +18,10 @@ public class Main {
 	private static int result = Integer.MAX_VALUE;
 	private static int[] dx = new int[]{-1, 0, 1, 0};
 	private static int[] dy = new int[]{0, 1, 0, -1};
+	private static final int Up = 0;
+	private static final int Right = 1;
+	private static final int Down = 2;
+	private static final int Left = 3;
 	private static int coin = 2;
 
 	public static void main(String[] args) throws IOException {
@@ -24,93 +32,55 @@ public class Main {
 		M = Integer.parseInt(st.nextToken());
 		char[][] graph = new char[N][M];
 
+
 		for (int i = 0; i < N; i++) {
 			graph[i] = br.readLine().toCharArray();
 		}
 
+
 		for (int i = 0; i < 4; i++) {
-			dfs(1, i, graph);
+			getMove(graph, i);
 		}
+
+
 		System.out.println(result);
 	}
 
-	private static void dfs(int level, int dir, char[][] curGraph) {
-
-		char[][] moveGraph = move(curGraph, dir);
-		if (isSame(curGraph, moveGraph)) return;
-		if (coin < 2) {
-			if (coin == 1) {
+	private static void dfs(char[][] graph, int level, int dir) {
+		int coinCount = 0;//getCount(graph);
+		if (coinCount < 2) {
+			if (coinCount == 1) {
+				// update result
 				result = Math.min(result, level);
 			}
-			coin = 2;
 			return;
 		}
 
 		for (int i = 0; i < 4; i++) {
-			if (isRoop(i, dir)) continue;
-			dfs(level + 1, i, moveGraph);
+			if (i == (dir + 2) % 4) {
+				continue;
+			}
+			getMove(graph, i);
+//			dfs(graph, level + 1, i);
 		}
+
 	}
 
-	private static char[][] move(char[][] graph, int dir) {
+	private static char[][] getMove(char[][] cur, int dir) {
 		char[][] result = new char[N][M];
-
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < M; j++) {
-				result[i][j] = graph[i][j];
-			}
-		}
+				int tx = dx[dir] + i;
+				int ty = dy[dir] + j;
 
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (graph[i][j] == 'o') {
-					int tx = i + dx[dir];
-					int ty = j + dy[dir];
-
-					// out
-					if (tx < 0 || ty < 0 || tx >= N || ty >= M) {
-						result[i][j] = '.';
-						coin--;
-						continue;
-					}
-
-					// wall
-					if (graph[tx][ty] == '#') {
-						if (result[i][j] == 'o') {
-							coin = -1;
-							return result;
-						}
-						result[i][j] = 'o';
-						continue;
-					}
-
-					// coin
-					if (result[tx][ty] == 'o') {
-						coin = -1;
-						return result;
-					}
-					result[tx][ty] = 'o';
-					result[i][j] = '.';
+				if (tx < 0 || ty < 0 || tx >= N || ty >= M) {
 					continue;
 				}
-				result[i][j] = graph[i][j];
+				result[i][j] = cur[tx][ty];
 			}
 		}
 		return result;
 	}
 
-	private static boolean isRoop(int newDir, int dir) {
-		return (newDir + 2) % 4 == dir;
-	}
 
-	private static boolean isSame(char[][] graph, char[][] move) {
-
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < M; j++) {
-				if (graph[i][j] != move[i][j]) return false;
-			}
-		}
-		return true;
-
-	}
 }
