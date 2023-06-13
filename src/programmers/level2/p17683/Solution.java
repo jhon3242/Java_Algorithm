@@ -9,30 +9,20 @@ class Solution {
 		String answer = "(None)";
 		int maxDiff = 0;
 
+		m = getNewCodes(m);
+
 		for (String info : musicinfos) {
 			String[] infos = info.split("\\,");
 			int timeDiff = getTimeDiff(infos[0], infos[1]);
-			List<String> codes = new ArrayList<>();
-
+			infos[3] = getNewCodes(infos[3]);
 			// System.out.println("start");
-			// if (m.length() > timeDiff) continue;
 			// System.out.println("end");
-
-			for (char c : infos[3].toCharArray()) {
-				if (c == '#') {
-					String tmp = codes.remove(codes.size() - 1);
-					codes.add(tmp + "#");
-					continue;
-				}
-				codes.add(String.valueOf(c));
-			}
-
 
 			// isMatch
 			StringBuilder sb = new StringBuilder();
 			int time = 0;
 			while (time < timeDiff) {
-				sb.append(codes.get(time % codes.size()));
+				sb.append(infos[3].charAt(time % infos[3].length()));
 				time++;
 			}
 
@@ -55,6 +45,14 @@ class Solution {
 	private int getMinute(String str) {
 		String[] splited = str.split(":");
 		return Integer.parseInt(splited[0]) * 60 + Integer.parseInt(splited[1]);
+	}
+
+	private String getNewCodes(String code) {
+		code = code.replaceAll("C#", "Q");
+		code = code.replaceAll("D#", "W");
+		code = code.replaceAll("F#", "X");
+		code = code.replaceAll("G#", "Y");
+		return code;
 	}
 
 
