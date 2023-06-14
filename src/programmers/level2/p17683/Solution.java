@@ -1,59 +1,48 @@
 package programmers.level2.p17683;
 
-import java.util.*;
-
 class Solution {
-
-
 	public String solution(String m, String[] musicinfos) {
 		String answer = "(None)";
-		int maxDiff = 0;
+		int maxTime = 0;
 
-		m = getNewCodes(m);
+		m = getNewCode(m);
 
 		for (String info : musicinfos) {
 			String[] infos = info.split("\\,");
-			int timeDiff = getTimeDiff(infos[0], infos[1]);
-			infos[3] = getNewCodes(infos[3]);
-			// System.out.println("start");
-			// System.out.println("end");
-
-			// isMatch
-			StringBuilder sb = new StringBuilder();
-			int time = 0;
-			while (time < timeDiff) {
-				sb.append(infos[3].charAt(time % infos[3].length()));
-				time++;
-			}
-
-			// System.out.println("sb " + sb);
-			// System.out.println("sb.toString().contains(m) " + sb.toString().contains(m));
-			// System.out.println("timeDiff > maxDiff " + (timeDiff > maxDiff));
-			if (sb.toString().contains(m) && timeDiff > maxDiff) {
+			int time = getTimeDiff(infos[0], infos[1]);
+			boolean result = isSameMusic(m, getNewCode(infos[3]), time);
+			if (result && maxTime < time) {
+				maxTime = time;
 				answer = infos[2];
 			}
-
 		}
-
 		return answer;
+	}
+
+	private String getNewCode(String code) {
+		String newCode;
+		newCode = code.replace("C#", "X");
+		newCode = newCode.replace("D#", "Y");
+		newCode = newCode.replace("F#", "Z");
+		newCode = newCode.replace("G#", "U");
+		newCode = newCode.replace("A#", "O");
+		return newCode;
 	}
 
 	private int getTimeDiff(String start, String end) {
 		return getMinute(end) - getMinute(start);
 	}
 
-	private int getMinute(String str) {
-		String[] splited = str.split(":");
-		return Integer.parseInt(splited[0]) * 60 + Integer.parseInt(splited[1]);
+	private int getMinute(String time) {
+		String[] t = time.split(":");
+		return Integer.parseInt(t[0]) * 60 + Integer.parseInt(t[1]);
 	}
 
-	private String getNewCodes(String code) {
-		code = code.replaceAll("C#", "Q");
-		code = code.replaceAll("D#", "W");
-		code = code.replaceAll("F#", "X");
-		code = code.replaceAll("G#", "Y");
-		return code;
+	private boolean isSameMusic(String m, String tmpMusic, int time) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < time; i++) {
+			sb.append(tmpMusic.charAt(i % tmpMusic.length()));
+		}
+		return sb.toString().contains(m);
 	}
-
-
 }
