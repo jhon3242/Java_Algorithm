@@ -5,8 +5,8 @@ import java.util.*;
 class Solution {
 	public long solution(int cap, int n, int[] deliveries, int[] pickups) {
 		long answer = 0;
-		int dI = 0;
-		int pI = 0;
+		int dI = -1;
+		int pI = -1;
 		int curCap;
 		int removeCount = 0;
 
