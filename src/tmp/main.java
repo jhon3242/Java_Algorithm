@@ -63,8 +63,18 @@ public class main {
 
 	public static void main(String[] args) throws ParseException {
 
+		Deque<String> qu = new LinkedList<>();
+
+		qu.addFirst("asd");
+		qu.addFirst("seoul");
+		qu.addFirst("v");
 
 
+		String str = "seoul";
+		if (qu.contains(str)) {
+			qu.remove(str);
+		}
 
+		System.out.println("qu = " + qu);
 	}
 }
