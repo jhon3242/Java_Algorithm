@@ -1,84 +1,135 @@
 package programmers.level2.p92342;
 
 import java.util.*;
+import java.util.stream.*;
+
+/*
+System.out.println("x = " + x);
+*/
 
 class Solution {
-	private int[] score = new int[11];
-	private int[] g_info, result = new int[11];
-	private int g_n, maxScore;
+
+	private List<Integer> finalResult;
+	private int maxResult = 0;
 
 	public int[] solution(int n, int[] info) {
-		g_n = n;
-		g_info = info;
-		bfs(0);
-		// int[] tmp2 = {1,1,2,0,1,2,2,0,0,0,0};
-		// System.out.println(winCk(info, tmp2));
-		if (arrCount(result) == 0){
-			int[] tmp = {-1};
-			return tmp;
+		int[] answer = {};
+		dfs(n, 10,info, new ArrayList<>());
+		// System.out.println("Final result = " + this.result);
+		if (maxResult == 0) return new int[]{-1};
+		return this.finalResult.stream().mapToInt(Integer::intValue).toArray();
+	}
+
+
+	// 라이언이 쏠 번호 리스트를 구하는 dfs
+	// 쏜다면 이길수 있는 값만큼 쏴야함
+	private void dfs(int left, int curNum, int pitchInfo[], List<Integer> result) {
+
+
+		// 더이상 못 쏠 때
+		if (left == 0) {
+			int count = 10 - result.size() + 1;
+			for (int i = 0 ; i < count; i++){
+				result.add(0);
+			}
+			int totalScore = getScore(result, pitchInfo);
+
+			// 정답을 업데이트 해야하는 경우
+			if (isUpdate(totalScore, result)) {
+				// 점수 업데이트
+
+				updateResult(totalScore, result);
+				// System.out.println("update result = " + this.finalResult);
+			}
+			// updateResult(totalScore, result);
+			for (int i = 0 ; i < count; i++){
+				result.remove(result.size() - 1);
+			}
+			return;
+		}
+
+		// 다 쐈을 때
+		if (curNum == 0) {
+			result.add(left);
+			int totalScore = getScore(result, pitchInfo);
+			if (isUpdate(totalScore, result)) {
+				// System.out.println("update result = " + this.result);
+				updateResult(totalScore, result);
+				// System.out.println("update result = " + this.finalResult);
+			}
+			result.remove(result.size() - 1);
+			return;
+		}
+
+		// 안 쏜 경우
+		result.add(0);
+		dfs(left, curNum - 1 , pitchInfo, result);
+		result.remove(result.size() - 1);
+
+		int winCount = getWinCount(curNum, pitchInfo);
+		// 쏜 경우
+		if (winCount <= left) {
+			result.add(winCount);
+			dfs(left - winCount, curNum - 1, pitchInfo, result);
+			result.remove(result.size() - 1);
+		}
+	}
+
+	private int getWinCount(int curNum, int[] info) {
+		return info[10 - curNum] + 1;
+	}
+
+	private int getScore(List<Integer> list, int[] info) {
+		int result = 0;
+		for (int i = 0 ; i < 11; i++) {
+			int score = 10 - i;
+
+			// 둘다 못맞출 때
+			if (info[i] == 0 && list.get(i) == 0) {
+				continue;
+			}
+
+			// 피치가 이긴 경우
+			if (info[i] >= list.get(i)) {
+				result -= score;
+			} else {
+				// 라이언이 이긴 경우
+				result += score;
+			}
 		}
 		return result;
 	}
 
-	private int winCk(int[] apitch, int[] lien){
-		int a_score = 0, l_score = 0;
-		for (int i=0; i<11; i++){
-			if (apitch[i] >= lien[i]){
-				if (apitch[i] != 0){
-					a_score += (10 - i);
-				}
-			}
-			else
-				l_score += (10 - i);
-		}
-		if (a_score >= l_score)
-			return -1;
-		else
-			return l_score - a_score;
+	// 점수 업데이트
+	private void updateResult(int score, List<Integer> lien) {
+		this.maxResult = score;
+		this.finalResult = new ArrayList<>(lien);
+		// System.out.println("this.result = " + this.result);
 	}
 
-	private void bfs(int idx){
-		int curCount = arrCount(score);
-		if (curCount == g_n || idx == 11){
-			int winScore = winCk(g_info, score);
-			score[10] = g_n - curCount;
-			if (maxScore <= winScore){
-				if (maxScore == winScore && !changeCk(score, result)){
-					return ;
-				}
-				result = score.clone();
-				maxScore = winScore;
-			}
-			return ;
-		}
-		for (int i=idx; i<11; i++){
-			int tmp = g_info[i] + 1;
-			if (tmp + curCount <= g_n){
-				score[i] = tmp;
-			}
-			bfs(idx + 1);
-			score[i] = 0;
-		}
-	}
 
-	// 현재 최고 점수 배열을 바꿔야 하는지 확인하는 함수
-	private boolean changeCk(int[] cur, int[] max){
-		for (int i=10; i>=0 ;i--){
-			if (cur[i] < max[i])
+	// 정답을 바꿔야 하는지
+	private boolean isUpdate(int score, List<Integer> list) {
+		// 못이기는 경우
+		if (score <= 0) return false;
+
+		// 더 좋은 결과가 있는 경우
+		if (score > maxResult) return true;
+
+		// 점수가 같은 경우
+		if (score == maxResult) {
+
+			for (int i = 10; i >= 0 ; i--) {
+				int tmp = list.get(i);
+				int reTmp = finalResult.get(i);
+
+				if (tmp == reTmp) continue;
+				if (tmp > reTmp) {
+					return true;
+				}
 				return false;
-			else if (cur[i] > max[i])
-				return true;
+			}
 		}
 		return false;
 	}
-
-	private int arrCount(int[] arr){
-		int result = 0;
-		for (int i: arr){
-			result += i;
-		}
-		return (result);
-	}
-
-
 }
