@@ -6,10 +6,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
+/*
+10
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+2 2 2 2 2 2 2 2 2 2
+
+ */
 public class Main {
 	private static int N;
-	private static int[] dx = {-1, 0, 1, 0};
-	private static int[] dy = {0, 1, 0, -1};
 	private static final int Up = 0;
 	private static final int Right = 1;
 	private static final int Down = 2;
@@ -33,7 +45,7 @@ public class Main {
 		System.out.println(result);
 	}
 
-	private static void dfs(int[][] graph, int level, int dir) {
+	private static void dfs(int[][] graph, int level, int dir) {;
 		if (level == 5) {
 			result = Math.max(result, getMaxBlock(graph));
 
@@ -139,6 +151,7 @@ public class Main {
 					int curNum = graph[i][col];
 					int s = i + 1;
 					while (s < N && graph[s][col] == 0) {
+						if (s == N - 1) break;
 						s++;
 					}
 					if (graph[s][col] == curNum) {
@@ -155,6 +168,7 @@ public class Main {
 					int curNum = graph[i][col];
 					int s = i - 1;
 					while (s > 0 && graph[s][col] == 0) {
+						if (s == 0 ) break;
 						s--;
 					}
 					if (graph[s][col] == curNum) {
