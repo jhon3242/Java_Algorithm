@@ -11,6 +11,7 @@ public class Main {
 	private static int[][] graph;
 	private static int result = Integer.MAX_VALUE;
 	private static List<Integer[]> stores = new ArrayList<>();
+	private static List<Integer[]> houses = new ArrayList<>();
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,6 +35,10 @@ public class Main {
 				if (graph[i][j] == 2) {
 					stores.add(new Integer[]{i, j});
 					graph[i][j] = 0;
+					continue;
+				}
+				if (graph[i][j] == 1) {
+					houses.add(new Integer[]{i, j});
 				}
 			}
 		}
@@ -52,77 +57,57 @@ public class Main {
 		}
 	}
 
-	//
 	private static void op(List<Integer> indexs) {
-		int[][] curGraph = getGraph(indexs);
-		int chickenDis = getChickenDis(curGraph);
+		int chickenDis = getChickenDis(indexs);
 		result = Math.min(result, chickenDis);
 	}
 
-
-	// indexs 에 해당하는 가게 빼고는 지워진 그래프 얻기
-	private static int[][] getGraph(List<Integer> indexs) {
-		int[][] result = new int[N][N];
-
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				result[i][j] = graph[i][j];
-			}
-		}
-
-		for (int idx : indexs) {
-			Integer[] pos = stores.get(idx);
-			result[pos[0]][pos[1]] = 2;
-		}
-
-		return result;
-	}
-
 	// 치킨거리 구하기
-	private static int getChickenDis(int[][] graph) {
+	private static int getChickenDis(List<Integer> indexs) {
+		int[][] distanceG = getDistanceG(indexs);
 		int result = 0;
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if (graph[i][j] == 1) {
-					int distance = getCurChickenDis(graph, i, j);
-					if (distance == -1) return -1;
-					result += distance;
-				}
-			}
+		for (Integer[] house : houses) {
+			result += distanceG[house[0]][house[1]];
 		}
 		return result;
 	}
 
-	private static int getCurChickenDis(int[][] graph, int x, int y) {
+	private static int[][] getDistanceG(List<Integer> indexs) {
 		PriorityQueue<Node> pq = new PriorityQueue<>();
-		boolean[][] visited = new boolean[N][N];
+		int[][] distanceG = new int[N][N];
+		for (int i = 0; i < N; i++) {
+			Arrays.fill(distanceG[i], -1);
+		}
 		int[] dx = new int[]{1, 0, -1, 0};
 		int[] dy = new int[]{0, 1, 0, -1};
-		pq.add(new Node(x, y, 0));
+
+		for (Integer index : indexs) {
+			Integer[] store = stores.get(index);
+			pq.add(new Node(store[0], store[1], 0));
+		}
 
 		while (!pq.isEmpty()) {
 			Node poll = pq.poll();
-			if (visited[poll.x][poll.y]) {
+			if (distanceG[poll.x][poll.y] != -1) {
 				continue;
 			}
-			visited[poll.x][poll.y] = true;
-
-			if (graph[poll.x][poll.y] == 2) {
-				return poll.dis;
-			}
-
+			distanceG[poll.x][poll.y] = poll.dis;
 			for (int i = 0; i < 4; i++) {
 				int tx = dx[i] + poll.x;
 				int ty = dy[i] + poll.y;
 
-				if (tx < 0 || ty < 0 || tx >= N || ty >= N || visited[tx][ty]) {
+				if (tx < 0 || ty < 0 || tx >= N || ty >= N) {
+					continue;
+				}
+				if (distanceG[tx][ty] != -1 && distanceG[tx][ty] < poll.dis + 1) {
 					continue;
 				}
 				pq.add(new Node(tx, ty, poll.dis + 1));
 			}
 		}
-		return -1;
+		return distanceG;
 	}
+
 
 	static class Node implements Comparable<Node> {
 		int x;
